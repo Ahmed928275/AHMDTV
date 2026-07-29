@@ -79,11 +79,9 @@
     .episode-img { width: 100%; height: 75px; object-fit: cover; border-radius: 6px; background: #111; margin-bottom: 6px; }
     .episode-info h4 { font-size: 11px; text-align: center; }
 
-    /* تحسين المشغل ليعمل بوضع ملء الشاشة الفعلي بالكامل داخل الأندرويد */
     #videoModal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; }
     .player-wrapper { position: relative; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
     
-    /* جعل الفيديو يملأ الشاشة تماماً بدون أي حواف سوداء مزعجة وضبط الأبعاد */
     video { width: 100%; height: 100%; object-fit: fill; background: #000; outline: none; }
 
     .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; background: rgba(0, 0, 0, 0.4); transition: opacity 0.3s ease; }
@@ -445,6 +443,9 @@
       isLiveStream = isLive;
       currentMediaId = id;
       
+      // إجبار الشاشة على الدوران أفقياً تلقائياً عند فتح المشغل مثل يوتيوب
+      lockScreenLandscape();
+
       if(isLive) {
         document.getElementById('liveIndicator').style.display = 'flex';
         document.getElementById('timeDisplay').innerText = 'مباشر';
@@ -480,6 +481,23 @@
       }, 1000);
     }
 
+    // دوال تدوير الشاشة
+    function lockScreenLandscape() {
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(() => {});
+        }
+      } catch (err) {}
+    }
+
+    function unlockScreenOrientation() {
+      try {
+        if (screen.orientation && screen.orientation.unlock) {
+          screen.orientation.unlock();
+        }
+      } catch (err) {}
+    }
+
     function startVideo(url, isLive) {
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       
@@ -510,6 +528,9 @@
       video.src = "";
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       document.getElementById('videoModal').style.display = 'none';
+      
+      // إعادة الشاشة للوضع العادي (العمودي) عند إغلاق المشغل
+      unlockScreenOrientation();
     }
 
     function toggleControls() {
