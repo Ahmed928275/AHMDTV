@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AHMED TV | Ultimate Android Edition</title>
+  <title>AHMED TV | Pro Edition</title>
   
+  <!-- FontAwesome & Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Plyr & HLS.js (المشغل الاحترافي) -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
@@ -16,6 +21,7 @@
       --ios-border: rgba(255, 255, 255, 0.15);
       --accent: #007aff;
       --danger: #ff3b30;
+      --plyr-color-main: #007aff; /* لون المشغل الاحترافي */
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -27,6 +33,17 @@
       min-height: 100vh;
       overflow-x: hidden;
       padding-bottom: 110px;
+    }
+
+    /* إعلان الافتتاحية */
+    #startupAdOverlay {
+      position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column;
+    }
+    .startup-ad-header {
+      display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #111; border-bottom: 1px solid #333;
+    }
+    .skip-startup-btn {
+      background: var(--danger); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-family: inherit; font-weight: 600; cursor: pointer; display: none; font-size: 13px;
     }
 
     header { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(10, 10, 12, 0.85); backdrop-filter: var(--ios-blur); padding: 10px 15px 12px; border-bottom: 0.5px solid var(--ios-border); }
@@ -49,7 +66,7 @@
 
     .app-container { padding: 0 15px; max-width: 600px; margin: 0 auto; }
     .content-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .glass-card { background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 16px; padding: 10px; text-align: center; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: white; will-change: transform; }
+    .glass-card { background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 16px; padding: 10px; text-align: center; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
     .card-img { width: 100%; height: 95px; object-fit: contain; border-radius: 10px; background: rgba(0,0,0,0.3); padding: 5px; margin-bottom: 8px; }
     .card-poster { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; }
     .card-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
@@ -63,7 +80,6 @@
     .drawer-header { padding: 30px 15px; text-align: center; border-bottom: 0.5px solid var(--ios-border); }
     .drawer-menu-list { padding: 10px 0; flex: 1; }
     .drawer-item { padding: 12px 18px; display: flex; align-items: center; gap: 12px; color: #fff; font-size: 13px; text-decoration: none; cursor: pointer; }
-    .drawer-item i { font-size: 16px; width: 20px; text-align: center; color: var(--accent); }
 
     #seriesModal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; display: none; flex-direction: column; padding: 15px; }
     .series-header { display: flex; gap: 12px; margin-bottom: 15px; align-items: center; }
@@ -72,47 +88,20 @@
     .season-tabs::-webkit-scrollbar { display: none; }
     .season-tab { padding: 6px 12px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 8px; color: #fff; font-size: 12px; cursor: pointer; white-space: nowrap; }
     .season-tab.active { background: var(--accent); border-color: var(--accent); }
-    
     .episodes-list { display: flex; flex-direction: row; gap: 10px; overflow-x: auto; padding-bottom: 15px; }
     .episodes-list::-webkit-scrollbar { display: none; }
     .episode-item { display: flex; flex-direction: column; min-width: 130px; background: var(--ios-bg); border: 1px solid var(--ios-border); padding: 8px; border-radius: 12px; cursor: pointer; }
     .episode-img { width: 100%; height: 75px; object-fit: cover; border-radius: 6px; background: #111; margin-bottom: 6px; }
     .episode-info h4 { font-size: 11px; text-align: center; }
 
+    /* تنسيق حاوية المشغل الاحترافي */
     #videoModal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; }
-    .player-wrapper { position: relative; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+    .player-container { width: 100%; height: 100%; position: relative; display: flex; align-items: center; background: #000; }
     
-    video { width: 100%; height: 100%; object-fit: fill; background: #000; outline: none; }
-
-    .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; background: rgba(0, 0, 0, 0.4); transition: opacity 0.3s ease; }
-    .player-ui.hidden { opacity: 0; pointer-events: none; }
-
-    .top-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-    .live-indicator { background: var(--danger); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 15px; display: flex; align-items: center; gap: 4px; }
-    .live-indicator .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; animation: blink 1s infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-    
-    .player-title { color: #fff; font-size: 14px; font-weight: 700; flex: 1; text-align: center; direction: ltr; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 10px; }
-    .btn-back-player { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-    .center-controls { display: flex; justify-content: center; align-items: center; gap: 40px; }
-    .btn-skip { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
-    .btn-play-pause { width: 65px; height: 65px; border-radius: 50%; background: rgba(0, 122, 255, 0.4); border: 2px solid var(--accent); color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-    .bottom-controls { display: flex; align-items: center; gap: 12px; width: 100%; direction: ltr; padding-bottom: 5px; }
-    .btn-bottom { background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; }
-    
-    .progress-container { flex: 1; display: flex; align-items: center; position: relative; height: 30px; cursor: pointer; touch-action: none; }
-    .progress-bg { width: 100%; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; position: relative; pointer-events: none; }
-    .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; width: 0%; position: absolute; left: 0; top: 0; }
-    .progress-thumb { width: 14px; height: 14px; background: #fff; border-radius: 50%; position: absolute; top: 50%; transform: translateY(-50%) translateX(50%); right: 100%; pointer-events: none; }
-    .time-display { color: #fff; font-size: 11px; font-weight: 600; min-width: 75px; text-align: right; }
-
-    #adOverlay { position: absolute; inset: 0; background: #000; z-index: 20; display: none; flex-direction: column; }
-    .ad-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(0,0,0,0.85); position: absolute; top: 0; width: 100%; z-index: 21; }
-    .ad-badge { background: #f1c40f; color: #000; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
-    .ad-timer { color: #fff; font-size: 13px; }
-    .ad-iframe { width: 100%; height: 100%; border: none; background: #111; }
+    /* زر الإغلاق العائم فوق المشغل */
+    .close-plyr-btn {
+      position: absolute; top: 15px; right: 15px; z-index: 5500; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+    }
 
     .tab-bar { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; height: 60px; background: rgba(20, 20, 22, 0.85); backdrop-filter: var(--ios-blur); border-radius: 28px; border: 1.5px solid var(--ios-border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
     .tab-item { color: rgba(255,255,255,0.4); text-decoration: none; text-align: center; font-size: 10px; cursor: pointer; flex: 1; }
@@ -123,6 +112,17 @@
   </style>
 </head>
 <body>
+
+  <!-- إعلان فتح التطبيق -->
+  <div id="startupAdOverlay">
+    <div class="startup-ad-header">
+      <span style="font-size: 12px; color: #ccc;"><i class="fas fa-ad"></i> إعلان افتتاحي</span>
+      <span id="startupAdTimer" style="font-size: 13px; font-weight: bold;">الرجاء الانتظار 5 ثواني...</span>
+      <button id="skipStartupBtn" class="skip-startup-btn" onclick="closeStartupAd()">تخطي للإستمرار <i class="fas fa-arrow-left"></i></button>
+    </div>
+    <!-- رابط الإعلان الخاص بك -->
+    <iframe src="https://omg10.com/4/8447429" style="flex: 1; border: none; background: #111; width: 100%;"></iframe>
+  </div>
 
   <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
   <div class="side-drawer" id="sideDrawer">
@@ -149,45 +149,11 @@
     <div class="episodes-list" id="episodesList"></div>
   </div>
 
+  <!-- حاوية المشغل الاحترافي -->
   <div id="videoModal">
-    <div class="player-wrapper" id="playerWrapper" onclick="toggleControls()">
-      <video id="videoPlayer" playsinline webkit-playsinline></video>
-      
-      <div id="adOverlay">
-        <div class="ad-header">
-          <span class="ad-badge">إعلان</span>
-          <span class="ad-timer">سيبدأ الفيديو بعد <span id="adSeconds">7</span> ثواني</span>
-        </div>
-        <iframe id="adIframe" class="ad-iframe" src="about:blank"></iframe>
-      </div>
-
-      <div class="player-ui" id="playerUI">
-        <div class="top-controls">
-          <div class="live-indicator" id="liveIndicator"><div class="dot"></div> LIVE</div>
-          <div class="player-title" id="playerTitle">اسم القناة أو الفيلم</div>
-          <button class="btn-back-player" onclick="event.stopPropagation(); closePlayer()"><i class="fas fa-chevron-right"></i></button>
-        </div>
-        
-        <div class="center-controls">
-          <button class="btn-skip" onclick="event.stopPropagation(); skipVideo(-10)"><i class="fas fa-backward"></i></button>
-          <button class="btn-play-pause" id="playPauseBtn" onclick="event.stopPropagation(); togglePlayPause()"><i class="fas fa-pause"></i></button>
-          <button class="btn-skip" onclick="event.stopPropagation(); skipVideo(10)"><i class="fas fa-forward"></i></button>
-        </div>
-        
-        <div class="bottom-controls">
-          <button class="btn-bottom" onclick="event.stopPropagation(); toggleFullscreen()"><i class="fas fa-expand"></i></button>
-          <button class="btn-bottom" onclick="event.stopPropagation(); toggleMute()"><i class="fas fa-volume-up" id="muteIcon"></i></button>
-          
-          <div class="progress-container" id="progressContainer">
-            <div class="progress-bg">
-              <div class="progress-fill" id="progressFill"></div>
-              <div class="progress-thumb" id="progressThumb"></div>
-            </div>
-          </div>
-          
-          <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
-        </div>
-      </div>
+    <button class="close-plyr-btn" onclick="closePlayer()"><i class="fas fa-times"></i></button>
+    <div class="player-container">
+      <video id="plyrVideo" playsinline controls data-poster=""></video>
     </div>
   </div>
 
@@ -199,7 +165,7 @@
     </div>
     <div class="search-container">
       <i class="fas fa-search" style="color: rgba(255,255,255,0.4); font-size: 13px;"></i>
-      <input type="text" id="searchInput" placeholder="ابحث..." oninput="handleSearch(this.value)">
+      <input type="text" id="searchInput" placeholder="ابحث عن قناة أو فيلم..." oninput="handleSearch(this.value)">
     </div>
   </header>
 
@@ -223,24 +189,82 @@
   </nav>
 
   <script>
+    // إعدادات الحساب
     const accounts = [
       { host: "http://vipxtv.net:80", user: "yousrybasha90", pass: "828274919478182" },
       { host: "http://sansatplus.net:88", user: "02077332242203", pass: "qBN8x0pwUJ4e6AA" },
       { host: "http://legendking.net:8080", user: "8c%3Aea%3A48%3A86%3Aa1%3A21", pass: "EFQVuf6xa2SwdkT" }
     ];
+    let currentActiveAccount = accounts[0];
 
+    // المتغيرات العامة
     let currentSection = 'live', categoriesList = [], fullDataList = [], filteredList = [], displayedCount = 0;
     const pageSize = 16;
     let favorites = [];
     
-    try {
-      favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
-    } catch(e) { favorites = []; }
+    // مشغل Plyr
+    let player;
+    let hlsInstance = null;
 
-    let currentActiveAccount = accounts[0];
+    // التنفيذ عند فتح التطبيق
+    window.onload = () => { 
+      initStartupAd();
+      initPlyr();
+    };
 
-    window.onload = () => { switchTab('live'); };
+    // --- نظام إعلان الافتتاحية ---
+    function initStartupAd() {
+      const adOverlay = document.getElementById('startupAdOverlay');
+      const adTimerText = document.getElementById('startupAdTimer');
+      const skipBtn = document.getElementById('skipStartupBtn');
+      
+      let timeLeft = 5;
+      const countdown = setInterval(() => {
+        timeLeft--;
+        adTimerText.innerText = `الرجاء الانتظار ${timeLeft} ثواني...`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          adTimerText.style.display = 'none';
+          skipBtn.style.display = 'block';
+        }
+      }, 1000);
+    }
 
+    function closeStartupAd() {
+      document.getElementById('startupAdOverlay').style.display = 'none';
+      switchTab('live'); // تحميل القنوات بعد تخطي الإعلان
+    }
+
+    // --- تهيئة مشغل Plyr الاحترافي ---
+    function initPlyr() {
+      const videoElement = document.getElementById('plyrVideo');
+      player = new Plyr(videoElement, {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'fullscreen'],
+        i18n: {
+          restart: 'إعادة',
+          rewind: 'تأخير {seektime}s',
+          play: 'تشغيل',
+          pause: 'إيقاف',
+          fastForward: 'تقديم {seektime}s',
+          seek: 'بحث',
+          seekLabel: '{currentTime} من {duration}',
+          played: 'تم التشغيل',
+          buffered: 'مؤقت',
+          currentTime: 'الوقت الحالي',
+          duration: 'المدة',
+          volume: 'الصوت',
+          mute: 'كتم',
+          unmute: 'إلغاء الكتم',
+          enableCaptions: 'تفعيل الترجمة',
+          disableCaptions: 'إلغاء الترجمة',
+          enterFullscreen: 'ملء الشاشة',
+          exitFullscreen: 'إنهاء ملء الشاشة'
+        }
+      });
+    }
+
+    // القائمة الجانبية والملاحة
     function toggleDrawer() {
       const drawer = document.getElementById('sideDrawer');
       drawer.classList.toggle('open');
@@ -308,12 +332,10 @@
       renderBatch();
     }
 
+    // --- قسم المفضلة ---
     function renderFavorites() {
       document.getElementById('subCatsBar').innerHTML = '';
-      try {
-        favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
-      } catch(e) { favorites = []; }
-      
+      try { favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]'); } catch(e) { favorites = []; }
       filteredList = favorites; 
       displayedCount = 0;
       document.getElementById('contentGrid').innerHTML = '';
@@ -324,7 +346,7 @@
       const grid = document.getElementById('contentGrid');
       const loadMoreContainer = document.getElementById('loadMoreContainer');
       loadMoreContainer.innerHTML = '';
-      if (!filteredList || filteredList.length === 0) { grid.innerHTML = '<div class="loader">لا توجد عناصر في المفضلة أو القائمة</div>'; return; }
+      if (!filteredList || filteredList.length === 0) { grid.innerHTML = '<div class="loader">القائمة فارغة</div>'; return; }
 
       const batch = filteredList.slice(displayedCount, displayedCount + pageSize);
       batch.forEach(item => {
@@ -335,27 +357,22 @@
         const favBtn = document.createElement('button');
         favBtn.className = `fav-card-btn ${isFav(item) ? 'active' : ''}`;
         favBtn.innerHTML = '<i class="fas fa-heart"></i>';
-        favBtn.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleFav(favBtn, item);
-        };
+        favBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleFav(favBtn, item); };
         card.appendChild(favBtn);
 
-        // تحديد نوع العنصر بدقة ليعمل بسلاسة حتى داخل قسم المفضلة
         const isSeriesItem = item.series_id !== undefined;
         const isLiveItem = item.stream_icon && !item.container_extension && !item.series_id && !item.num;
 
         if (currentSection === 'live' || (currentSection === 'favorites' && isLiveItem)) {
           const streamUrl = `${currentActiveAccount.host}/live/${currentActiveAccount.user}/${currentActiveAccount.pass}/${id}.m3u8`;
-          card.onclick = () => showAdAndPlay(streamUrl, true, item.name, id);
+          card.onclick = () => openPlayer(streamUrl, true);
           card.innerHTML += `<span class="live-badge">مباشر</span><img src="${item.stream_icon || ''}" class="card-img" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         } else if (currentSection === 'series' || (currentSection === 'favorites' && isSeriesItem)) {
           card.onclick = () => openSeriesDetails(id, item.name, item.cover || item.stream_icon);
           card.innerHTML += `<img src="${item.cover || item.stream_icon || ''}" class="card-poster" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         } else {
           const mediaUrl = `${currentActiveAccount.host}/movie/${currentActiveAccount.user}/${currentActiveAccount.pass}/${id}.${item.container_extension || 'mp4'}`;
-          card.onclick = () => showAdAndPlay(mediaUrl, false, item.name, id);
+          card.onclick = () => openPlayer(mediaUrl, false);
           card.innerHTML += `<img src="${item.stream_icon || ''}" class="card-poster" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         }
         grid.appendChild(card);
@@ -387,6 +404,14 @@
       if (currentSection === 'favorites') renderFavorites();
     }
 
+    function handleSearch(keyword) {
+      const q = keyword.trim().toLowerCase();
+      const src = currentSection === 'favorites' ? favorites : fullDataList;
+      filteredList = src.filter(i => (i.name || "").toLowerCase().includes(q));
+      displayedCount = 0; document.getElementById('contentGrid').innerHTML = ''; renderBatch();
+    }
+
+    // --- دوال المسلسلات ---
     async function openSeriesDetails(id, title, poster) {
       document.getElementById('seriesModal').style.display = 'flex';
       document.getElementById('seriesModalTitle').innerText = title;
@@ -403,218 +428,77 @@
       Object.keys(data.episodes).forEach((s, idx) => {
         const tab = document.createElement('button'); tab.className = `season-tab ${idx===0?'active':''}`;
         tab.innerText = `الموسم ${s}`;
-        tab.onclick = () => { document.querySelectorAll('.season-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); renderEps(data.episodes[s], title); };
+        tab.onclick = () => { document.querySelectorAll('.season-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); renderEps(data.episodes[s]); };
         tabsBar.appendChild(tab);
       });
-      if(Object.keys(data.episodes).length > 0) renderEps(data.episodes[Object.keys(data.episodes)[0]], title);
+      if(Object.keys(data.episodes).length > 0) renderEps(data.episodes[Object.keys(data.episodes)[0]]);
     }
 
-    function renderEps(eps, sTitle) {
+    function renderEps(eps) {
       const epsList = document.getElementById('episodesList'); epsList.innerHTML = '';
       eps.forEach(ep => {
         const item = document.createElement('div'); item.className = 'episode-item';
         const url = `${currentActiveAccount.host}/series/${currentActiveAccount.user}/${currentActiveAccount.pass}/${ep.id}.${ep.container_extension || 'mp4'}`;
-        item.onclick = () => { closeSeriesModal(); showAdAndPlay(url, false, `الحلقة ${ep.episode_num} - ${sTitle}`, 'ep_' + ep.id); };
+        item.onclick = () => { closeSeriesModal(); openPlayer(url, false); };
         item.innerHTML = `
           <img src="${ep.info.movie_image || ''}" class="episode-img" loading="lazy" onerror="this.style.display='none'">
           <div class="episode-info"><h4>الحلقة ${ep.episode_num}</h4></div>`;
         epsList.appendChild(item);
       });
     }
-    
     function closeSeriesModal() { document.getElementById('seriesModal').style.display = 'none'; }
-    
-    function handleSearch(keyword) {
-      const q = keyword.trim().toLowerCase();
-      const src = currentSection === 'favorites' ? favorites : fullDataList;
-      filteredList = src.filter(i => (i.name || "").toLowerCase().includes(q));
-      displayedCount = 0; document.getElementById('contentGrid').innerHTML = ''; renderBatch();
-    }
 
-    let hlsInstance = null;
-    const video = document.getElementById('videoPlayer');
-    const playerUI = document.getElementById('playerUI');
-    let uiTimeout;
-    let isLiveStream = false;
-    let currentMediaId = null;
-
-    function showAdAndPlay(url, isLive, title, id) {
-      document.getElementById('videoModal').style.display = 'flex';
-      document.getElementById('playerTitle').innerText = title;
-      isLiveStream = isLive;
-      currentMediaId = id;
-      
-      lockScreenLandscape();
-
-      if(isLive) {
-        document.getElementById('liveIndicator').style.display = 'flex';
-        document.getElementById('timeDisplay').innerText = 'مباشر';
-        document.getElementById('progressContainer').style.opacity = '0.3';
-      } else {
-        document.getElementById('liveIndicator').style.display = 'none';
-        document.getElementById('progressContainer').style.opacity = '1';
-      }
-
-      const adOverlay = document.getElementById('adOverlay');
-      const adIframe = document.getElementById('adIframe');
-      const adSecondsSpan = document.getElementById('adSeconds');
-      
-      adIframe.src = "https://omg10.com/4/8447429"; 
-      adOverlay.style.display = 'flex';
-      playerUI.style.display = 'none';
-      video.style.display = 'none'; 
-      
-      let timeLeft = 7;
-      adSecondsSpan.innerText = timeLeft;
-      
-      const countdown = setInterval(() => {
-        timeLeft--;
-        adSecondsSpan.innerText = timeLeft;
-        if(timeLeft <= 0) {
-          clearInterval(countdown);
-          adOverlay.style.display = 'none';
-          adIframe.src = "about:blank"; 
-          playerUI.style.display = 'flex';
-          video.style.display = 'block';
-          startVideo(url, isLive);
-        }
-      }, 1000);
-    }
-
+    // --- مشغل الفيديو وتدوير الشاشة ---
     function lockScreenLandscape() {
       try {
         const docEl = document.documentElement;
-        if (docEl.requestFullscreen) {
-          docEl.requestFullscreen().catch(() => {});
-        } else if (docEl.webkitRequestFullscreen) {
-          docEl.webkitRequestFullscreen();
-        }
-
-        if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(() => {});
-        }
+        if (docEl.requestFullscreen) { docEl.requestFullscreen().catch(() => {}); } 
+        else if (docEl.webkitRequestFullscreen) { docEl.webkitRequestFullscreen(); }
+        if (screen.orientation && screen.orientation.lock) { screen.orientation.lock('landscape').catch(() => {}); }
       } catch (err) {}
     }
 
     function unlockScreenOrientation() {
       try {
         if (document.fullscreenElement || document.webkitFullscreenElement) {
-          if (document.exitFullscreen) {
-            document.exitFullscreen().catch(() => {});
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-          }
+          if (document.exitFullscreen) { document.exitFullscreen().catch(() => {}); } 
+          else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
         }
-        if (screen.orientation && screen.orientation.unlock) {
-          screen.orientation.unlock();
-        }
+        if (screen.orientation && screen.orientation.unlock) { screen.orientation.unlock(); }
       } catch (err) {}
     }
 
-    function startVideo(url, isLive) {
-      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+    function openPlayer(url, isLive) {
+      document.getElementById('videoModal').style.display = 'flex';
+      lockScreenLandscape();
       
-      if (isLive && Hls.isSupported()) {
-        hlsInstance = new Hls({ maxBufferLength: 15, liveSyncDurationCount: 2 }); 
-        hlsInstance.loadSource(url); 
-        hlsInstance.attachMedia(video);
-        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
-      } else {
-        video.src = url; 
-        video.load();
-        if (!isLiveStream && currentMediaId) {
-          const savedTime = localStorage.getItem('ahmedtv_resume_' + currentMediaId);
-          if (savedTime && !isNaN(savedTime)) {
-            video.currentTime = parseFloat(savedTime);
-          }
-        }
-        video.play().catch(e => console.log(e));
+      const videoElement = document.getElementById('plyrVideo');
+      
+      if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = null;
       }
-      resetUITimeout();
+
+      if (isLive && Hls.isSupported()) {
+        hlsInstance = new Hls();
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(videoElement);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          player.play();
+        });
+      } else {
+        videoElement.src = url;
+        player.play();
+      }
     }
 
     function closePlayer() {
-      if (!isLiveStream && currentMediaId && video.currentTime > 5) {
-        localStorage.setItem('ahmedtv_resume_' + currentMediaId, video.currentTime);
-      }
-      video.pause(); 
-      video.src = "";
+      if (player) { player.pause(); }
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      document.getElementById('plyrVideo').src = '';
       document.getElementById('videoModal').style.display = 'none';
       unlockScreenOrientation();
     }
-
-    function toggleControls() {
-      playerUI.classList.toggle('hidden');
-      if(!playerUI.classList.contains('hidden')) resetUITimeout();
-    }
-
-    function resetUITimeout() {
-      clearTimeout(uiTimeout);
-      uiTimeout = setTimeout(() => { playerUI.classList.add('hidden'); }, 3000);
-    }
-
-    function togglePlayPause() {
-      const icon = document.querySelector('#playPauseBtn i');
-      if (video.paused) { video.play(); icon.className = 'fas fa-pause'; } 
-      else { video.pause(); icon.className = 'fas fa-play'; }
-      resetUITimeout();
-    }
-
-    function skipVideo(seconds) {
-      if(!isLiveStream && video.duration) {
-        video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
-      }
-      resetUITimeout();
-    }
-
-    function toggleMute() {
-      video.muted = !video.muted;
-      document.getElementById('muteIcon').className = video.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
-      resetUITimeout();
-    }
-
-    function toggleFullscreen() {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        document.documentElement.requestFullscreen().catch(() => {});
-      }
-      resetUITimeout();
-    }
-
-    video.addEventListener('timeupdate', () => {
-      if (isLiveStream || !video.duration || isDraggingProgress) return;
-      const percent = (video.currentTime / video.duration) * 100;
-      document.getElementById('progressFill').style.width = percent + '%';
-      document.getElementById('progressThumb').style.right = (100 - percent) + '%';
-      
-      let mins = Math.floor(video.currentTime / 60); let secs = Math.floor(video.currentTime % 60);
-      let dmins = Math.floor(video.duration / 60); let dsecs = Math.floor(video.duration % 60);
-      document.getElementById('timeDisplay').innerText = `${mins}:${secs<10?'0':''}${secs} / ${dmins}:${dsecs<10?'0':''}${dsecs}`;
-    });
-
-    const progressContainer = document.getElementById('progressContainer');
-    let isDraggingProgress = false;
-
-    function updateProgressFromEvent(e) {
-      if (isLiveStream || !video.duration) return;
-      const rect = progressContainer.getBoundingClientRect();
-      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      let pos = (clientX - rect.left) / rect.width;
-      pos = Math.max(0, Math.min(1, pos));
-      video.currentTime = pos * video.duration;
-      const percent = pos * 100;
-      document.getElementById('progressFill').style.width = percent + '%';
-      document.getElementById('progressThumb').style.right = (100 - percent) + '%';
-    }
-
-    progressContainer.addEventListener('touchstart', (e) => { if(isLiveStream) return; isDraggingProgress = true; updateProgressFromEvent(e); }, {passive: true});
-    progressContainer.addEventListener('touchmove', (e) => { if(!isDraggingProgress) return; updateProgressFromEvent(e); }, {passive: true});
-    progressContainer.addEventListener('touchend', () => { isDraggingProgress = false; });
-    progressContainer.addEventListener('mousedown', (e) => { if(isLiveStream) return; isDraggingProgress = true; updateProgressFromEvent(e); });
-    document.addEventListener('mousemove', (e) => { if(isDraggingProgress) updateProgressFromEvent(e); });
-    document.addEventListener('mouseup', () => { isDraggingProgress = false; });
   </script>
 </body>
 </html>
