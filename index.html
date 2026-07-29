@@ -443,7 +443,7 @@
       isLiveStream = isLive;
       currentMediaId = id;
       
-      // إجبار الشاشة على الدوران أفقياً تلقائياً عند فتح المشغل مثل يوتيوب
+      // تفعيل وضع الدوران وملء الشاشة تلقائياً عند فتح المشغل
       lockScreenLandscape();
 
       if(isLive) {
@@ -481,9 +481,16 @@
       }, 1000);
     }
 
-    // دوال تدوير الشاشة
+    // دوال تدوير الشاشة وملء الشاشة المحسنة
     function lockScreenLandscape() {
       try {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          docEl.requestFullscreen().catch(() => {});
+        } else if (docEl.webkitRequestFullscreen) {
+          docEl.webkitRequestFullscreen();
+        }
+
         if (screen.orientation && screen.orientation.lock) {
           screen.orientation.lock('landscape').catch(() => {});
         }
@@ -492,6 +499,13 @@
 
     function unlockScreenOrientation() {
       try {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+        }
         if (screen.orientation && screen.orientation.unlock) {
           screen.orientation.unlock();
         }
@@ -529,7 +543,7 @@
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       document.getElementById('videoModal').style.display = 'none';
       
-      // إعادة الشاشة للوضع العادي (العمودي) عند إغلاق المشغل
+      // إعادة الشاشة لوضعها الطبيعي وإلغاء ملء الشاشة عند الإغلاق
       unlockScreenOrientation();
     }
 
@@ -564,10 +578,10 @@
     }
 
     function toggleFullscreen() {
-      if (video.webkitEnterFullscreen) {
-        video.webkitEnterFullscreen();
-      } else if (video.requestFullscreen) {
-        video.requestFullscreen();
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        document.documentElement.requestFullscreen().catch(() => {});
       }
       resetUITimeout();
     }
