@@ -58,7 +58,7 @@
     .card-poster { width: 100%; height: 160px; object-fit: cover; border-radius: 14px; margin-bottom: 10px; }
     .card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
     .live-badge { position: absolute; top: 10px; right: 10px; background: var(--danger); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 6px; font-weight: bold; }
-    .fav-card-btn { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 0.5px solid var(--ios-border); width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; transition: 0.2s; }
+    .fav-card-btn { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 0.5px solid var(--ios-border); width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: 0.2s; }
     .fav-card-btn.active { color: var(--danger); background: rgba(255, 59, 48, 0.15); border-color: var(--danger); }
 
     /* القائمة الجانبية */
@@ -72,28 +72,31 @@
     .drawer-item:active { background: rgba(255,255,255,0.06); color: var(--accent); border-right-color: var(--accent); }
     .drawer-item i { font-size: 18px; width: 24px; text-align: center; color: var(--accent); }
 
-    /* تفاصيل المسلسلات */
-    #seriesModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: var(--ios-blur); z-index: 4000; display: none; flex-direction: column; overflow-y: auto; padding: 20px; }
+    /* تفاصيل المسلسلات - التمرير الأفقي للحلقات */
+    #seriesModal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: var(--ios-blur); z-index: 4000; display: none; flex-direction: column; padding: 20px; }
     .series-header { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
     .series-poster { width: 100px; height: 140px; object-fit: cover; border-radius: 12px; border: 1px solid var(--ios-border); }
     .season-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
+    .season-tabs::-webkit-scrollbar { display: none; }
     .season-tab { padding: 8px 16px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 10px; color: #fff; font-size: 13px; cursor: pointer; white-space: nowrap; }
     .season-tab.active { background: var(--accent); border-color: var(--accent); }
-    .episodes-list { display: flex; flex-direction: column; gap: 10px; }
-    .episode-item { display: flex; align-items: center; gap: 12px; background: var(--ios-bg); border: 1px solid var(--ios-border); padding: 10px; border-radius: 14px; cursor: pointer; }
-    .episode-img { width: 80px; height: 50px; object-fit: cover; border-radius: 8px; background: #111; }
-    .episode-info h4 { font-size: 13px; margin-bottom: 3px; }
-
-    /* المشغل المخصص - مطابق للصورة */
-    #videoModal { position: fixed; inset: 0; background: var(--player-bg); z-index: 5000; display: none; width: 100vw; height: 100vh; flex-direction: column; }
     
-    .player-wrapper { position: relative; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-    video { width: 100%; height: 100%; object-fit: contain; background: #000; }
-    
-    /* شبكة الخلفية الشفافة مثل الصورة */
-    .player-grid-overlay { position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 10% 100%; pointer-events: none; z-index: 1; }
+    /* التعديل الجديد للحلقات بجانب بعض */
+    .episodes-list { display: flex; flex-direction: row; gap: 12px; overflow-x: auto; padding-bottom: 20px; }
+    .episodes-list::-webkit-scrollbar { display: none; }
+    .episode-item { display: flex; flex-direction: column; min-width: 140px; background: var(--ios-bg); border: 1px solid var(--ios-border); padding: 10px; border-radius: 14px; cursor: pointer; }
+    .episode-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; background: #111; margin-bottom: 8px; }
+    .episode-info h4 { font-size: 12px; text-align: center; white-space: normal; }
 
-    .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; background: rgba(10, 17, 26, 0.4); transition: opacity 0.3s ease; }
+    /* المشغل المخصص - مطابق للصورة والمطلوب */
+    #videoModal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; width: 100vw; height: 100vh; flex-direction: column; }
+    
+    .player-wrapper { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; }
+    video { width: 100%; height: 100%; object-fit: contain; background: #000; position: absolute; }
+    
+    .player-grid-overlay { position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 10% 100%; pointer-events: none; z-index: 1; }
+
+    .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; background: rgba(0, 0, 0, 0.5); transition: opacity 0.3s ease; }
     .player-ui.hidden { opacity: 0; pointer-events: none; }
 
     /* أدوات التحكم العلوية */
@@ -105,20 +108,23 @@
     .player-title { color: #fff; font-size: 16px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); flex: 1; text-align: center; direction: ltr; }
     .btn-back-player { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
 
-    /* أدوات التحكم الوسطى */
-    .center-controls { display: flex; justify-content: center; align-items: center; gap: 40px; }
-    .btn-skip { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 24px; cursor: pointer; transition: 0.2s; }
-    .btn-skip:active { color: #fff; transform: scale(0.9); }
-    .btn-play-pause { width: 70px; height: 70px; border-radius: 50%; background: rgba(0, 122, 255, 0.3); border: 2px solid rgba(0, 122, 255, 0.6); color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+    /* أدوات التحكم الوسطى (أزرار 10 ثواني) */
+    .center-controls { display: flex; justify-content: center; align-items: center; gap: 50px; }
+    .btn-skip { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; transition: 0.2s; opacity: 0.8; }
+    .btn-skip:active { opacity: 1; transform: scale(0.85); }
+    .btn-play-pause { width: 75px; height: 75px; border-radius: 50%; background: rgba(0, 122, 255, 0.25); border: 2px solid var(--accent); color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s; }
+    .btn-play-pause:active { transform: scale(0.9); background: rgba(0, 122, 255, 0.5); }
 
-    /* أدوات التحكم السفلية */
-    .bottom-controls { display: flex; align-items: center; gap: 15px; width: 100%; direction: ltr; }
-    .btn-bottom { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; opacity: 0.8; }
-    .progress-container { flex: 1; display: flex; align-items: center; position: relative; height: 20px; cursor: pointer; }
-    .progress-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; position: relative; }
-    .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; position: absolute; left: 0; top: 0; }
-    .progress-thumb { width: 12px; height: 12px; background: #fff; border-radius: 50%; position: absolute; top: 50%; transform: translateY(-50%) translateX(50%); right: 100%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
-    .time-display { color: #fff; font-size: 12px; font-weight: 600; min-width: 45px; text-align: right; }
+    /* أدوات التحكم السفلية - شريط السحب */
+    .bottom-controls { display: flex; align-items: center; gap: 15px; width: 100%; direction: ltr; padding-bottom: 10px; }
+    .btn-bottom { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.8; }
+    
+    .progress-container { flex: 1; display: flex; align-items: center; position: relative; height: 30px; cursor: pointer; touch-action: none; }
+    .progress-bg { width: 100%; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; position: relative; pointer-events: none; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; width: 0%; position: absolute; left: 0; top: 0; }
+    .progress-thumb { width: 16px; height: 16px; background: #fff; border-radius: 50%; position: absolute; top: 50%; transform: translateY(-50%) translateX(50%); right: 100%; box-shadow: 0 0 8px rgba(0,0,0,0.6); pointer-events: none; }
+    
+    .time-display { color: #fff; font-size: 13px; font-weight: 600; min-width: 90px; text-align: right; }
 
     /* واجهة الإعلان المنبثق داخل المشغل */
     #adOverlay { position: absolute; inset: 0; background: #000; z-index: 20; display: none; flex-direction: column; }
@@ -188,23 +194,23 @@
         </div>
         
         <div class="center-controls">
-          <button class="btn-skip" onclick="event.stopPropagation(); skipVideo(-10)"><i class="fas fa-backward-step"></i></button>
+          <button class="btn-skip" onclick="event.stopPropagation(); skipVideo(-10)"><i class="fas fa-backward"></i></button>
           <button class="btn-play-pause" id="playPauseBtn" onclick="event.stopPropagation(); togglePlayPause()"><i class="fas fa-pause"></i></button>
-          <button class="btn-skip" onclick="event.stopPropagation(); skipVideo(10)"><i class="fas fa-forward-step"></i></button>
+          <button class="btn-skip" onclick="event.stopPropagation(); skipVideo(10)"><i class="fas fa-forward"></i></button>
         </div>
         
         <div class="bottom-controls">
           <button class="btn-bottom" onclick="event.stopPropagation(); toggleFullscreen()"><i class="fas fa-expand"></i></button>
           <button class="btn-bottom" onclick="event.stopPropagation(); toggleMute()"><i class="fas fa-volume-up" id="muteIcon"></i></button>
           
-          <div class="progress-container" id="progressContainer" onclick="event.stopPropagation(); seekVideo(event)">
+          <div class="progress-container" id="progressContainer">
             <div class="progress-bg">
               <div class="progress-fill" id="progressFill"></div>
               <div class="progress-thumb" id="progressThumb"></div>
             </div>
           </div>
           
-          <div class="time-display" id="timeDisplay">مباشر</div>
+          <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
         </div>
       </div>
     </div>
@@ -250,7 +256,7 @@
 
     let currentSection = 'live', categoriesList = [], fullDataList = [], filteredList = [], displayedCount = 0;
     const pageSize = 20;
-    // تحميل المفضلة من الذاكرة المحلية (تحفظ تلقائياً)
+    // تحميل المفضلة 
     let favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
     let currentActiveAccount = accounts[0];
 
@@ -342,10 +348,15 @@
         card.className = 'glass-card';
         const id = item.stream_id || item.series_id;
         
+        // تعديل زر المفضلة لمنع تداخل النقرات
         const favBtn = document.createElement('button');
         favBtn.className = `fav-card-btn ${isFav(item) ? 'active' : ''}`;
         favBtn.innerHTML = '<i class="fas fa-heart"></i>';
-        favBtn.onclick = (e) => toggleFav(e, item);
+        favBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation(); // يمنع فتح الفيديو عند ضغط القلب
+          toggleFav(favBtn, item);
+        };
         card.appendChild(favBtn);
 
         const isLive = currentSection === 'live' || (currentSection === 'favorites' && item.stream_icon && !item.container_extension && !item.num);
@@ -353,14 +364,14 @@
 
         if (isLive) {
           const streamUrl = `${currentActiveAccount.host}/live/${currentActiveAccount.user}/${currentActiveAccount.pass}/${id}.m3u8`;
-          card.onclick = () => showAdAndPlay(streamUrl, true, item.name);
+          card.onclick = () => showAdAndPlay(streamUrl, true, item.name, id);
           card.innerHTML += `<span class="live-badge">مباشر</span><img src="${item.stream_icon || ''}" class="card-img" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         } else if (isSeries) {
           card.onclick = () => openSeriesDetails(id, item.name, item.cover || item.stream_icon);
           card.innerHTML += `<img src="${item.cover || item.stream_icon}" class="card-poster" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         } else {
           const mediaUrl = `${currentActiveAccount.host}/movie/${currentActiveAccount.user}/${currentActiveAccount.pass}/${id}.${item.container_extension || 'mp4'}`;
-          card.onclick = () => showAdAndPlay(mediaUrl, false, item.name);
+          card.onclick = () => showAdAndPlay(mediaUrl, false, item.name, id);
           card.innerHTML += `<img src="${item.stream_icon}" class="card-poster" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         }
         grid.appendChild(card);
@@ -378,14 +389,17 @@
       return favorites.some(f => (f.stream_id || f.series_id) == id);
     }
     
-    function toggleFav(event, item) {
-      event.stopPropagation();
+    function toggleFav(btnElement, item) {
       const id = item.stream_id || item.series_id;
       const index = favorites.findIndex(f => (f.series_id || f.stream_id) == id);
-      if (index > -1) favorites.splice(index, 1);
-      else favorites.push(item);
+      if (index > -1) {
+        favorites.splice(index, 1);
+        btnElement.classList.remove('active');
+      } else {
+        favorites.push(item);
+        btnElement.classList.add('active');
+      }
       localStorage.setItem('ahmed_tv_favs', JSON.stringify(favorites));
-      event.currentTarget.classList.toggle('active');
       if (currentSection === 'favorites') renderFavorites();
     }
 
@@ -416,12 +430,17 @@
       eps.forEach(ep => {
         const item = document.createElement('div'); item.className = 'episode-item';
         const url = `${currentActiveAccount.host}/series/${currentActiveAccount.user}/${currentActiveAccount.pass}/${ep.id}.${ep.container_extension || 'mp4'}`;
-        item.onclick = () => { closeSeriesModal(); showAdAndPlay(url, false, `الحلقة ${ep.episode_num} - ${sTitle}`); };
-        item.innerHTML = `<div class="episode-info"><h4>الحلقة ${ep.episode_num}: ${ep.title}</h4></div>`;
+        // تمرير معرف الحلقة للتمكن من حفظ تقدم المشاهدة لها بشكل مستقل
+        item.onclick = () => { closeSeriesModal(); showAdAndPlay(url, false, `الحلقة ${ep.episode_num} - ${sTitle}`, 'ep_' + ep.id); };
+        item.innerHTML = `
+          <img src="${ep.info.movie_image || ''}" class="episode-img" onerror="this.style.display='none'">
+          <div class="episode-info"><h4>الحلقة ${ep.episode_num}: ${ep.title}</h4></div>`;
         epsList.appendChild(item);
       });
     }
+    
     function closeSeriesModal() { document.getElementById('seriesModal').style.display = 'none'; }
+    
     function handleSearch(keyword) {
       const q = keyword.trim().toLowerCase();
       const src = currentSection === 'favorites' ? favorites : fullDataList;
@@ -430,38 +449,38 @@
     }
 
     /* ---------------------------------------------------
-       برمجة المشغل المخصص والإعلانات
+       برمجة المشغل المخصص وحفظ تقدم المشاهدة وشريط التمرير
     --------------------------------------------------- */
     let hlsInstance = null;
     const video = document.getElementById('videoPlayer');
     const playerUI = document.getElementById('playerUI');
     let uiTimeout;
     let isLiveStream = false;
+    let currentMediaId = null;
 
-    // دالة عرض إعلان Monetag لمدة 7 ثواني قبل التشغيل
-    function showAdAndPlay(url, isLive, title) {
+    function showAdAndPlay(url, isLive, title, id) {
       document.getElementById('videoModal').style.display = 'flex';
       document.getElementById('playerTitle').innerText = title;
       isLiveStream = isLive;
+      currentMediaId = id; // حفظ المعرف للتمكن من إكمال المشاهدة
       
       if(isLive) {
         document.getElementById('liveIndicator').style.display = 'flex';
         document.getElementById('timeDisplay').innerText = 'مباشر';
-        document.getElementById('progressContainer').style.pointerEvents = 'none';
+        document.getElementById('progressContainer').style.opacity = '0.5';
       } else {
         document.getElementById('liveIndicator').style.display = 'none';
-        document.getElementById('progressContainer').style.pointerEvents = 'auto';
+        document.getElementById('progressContainer').style.opacity = '1';
       }
 
-      // إعداد الإعلان
       const adOverlay = document.getElementById('adOverlay');
       const adIframe = document.getElementById('adIframe');
       const adSecondsSpan = document.getElementById('adSeconds');
       
-      adIframe.src = "https://omg10.com/4/8447429"; // رابط Monetag الخاص بك
+      adIframe.src = "https://omg10.com/4/8447429"; 
       adOverlay.style.display = 'flex';
-      playerUI.style.display = 'none'; // إخفاء أزرار التحكم أثناء الإعلان
-      video.style.display = 'none'; // إخفاء الفيديو مؤقتاً
+      playerUI.style.display = 'none';
+      video.style.display = 'none'; 
       
       let timeLeft = 7;
       adSecondsSpan.innerText = timeLeft;
@@ -472,10 +491,10 @@
         if(timeLeft <= 0) {
           clearInterval(countdown);
           adOverlay.style.display = 'none';
-          adIframe.src = "about:blank"; // إيقاف الإعلان
+          adIframe.src = "about:blank"; 
           playerUI.style.display = 'flex';
           video.style.display = 'block';
-          startVideo(url, isLive); // بدء تشغيل الفيديو
+          startVideo(url, isLive);
         }
       }, 1000);
     }
@@ -483,22 +502,38 @@
     function startVideo(url, isLive) {
       if (isLive && Hls.isSupported()) {
         if (hlsInstance) hlsInstance.destroy();
-        hlsInstance = new Hls(); hlsInstance.loadSource(url); hlsInstance.attachMedia(video);
+        hlsInstance = new Hls(); 
+        hlsInstance.loadSource(url); 
+        hlsInstance.attachMedia(video);
         hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play());
       } else {
-        video.src = url; video.play();
+        video.src = url; 
+        
+        // استرجاع الدقيقة التي توقف عندها (Resume)
+        if (!isLiveStream && currentMediaId) {
+          const savedTime = localStorage.getItem('ahmedtv_resume_' + currentMediaId);
+          if (savedTime && !isNaN(savedTime)) {
+            video.currentTime = parseFloat(savedTime);
+          }
+        }
+        video.play();
       }
       resetUITimeout();
     }
 
     function closePlayer() {
-      video.pause(); video.src = "";
+      // حفظ الوقت الحالي قبل الخروج إذا كان فيلماً أو مسلسلاً
+      if (!isLiveStream && currentMediaId && video.currentTime > 5) {
+        localStorage.setItem('ahmedtv_resume_' + currentMediaId, video.currentTime);
+      }
+      
+      video.pause(); 
+      video.src = "";
       if (hlsInstance) hlsInstance.destroy();
       document.getElementById('videoModal').style.display = 'none';
       if(document.fullscreenElement) document.exitFullscreen();
     }
 
-    // تفاعل واجهة المشغل (الإخفاء والإظهار)
     function toggleControls() {
       playerUI.classList.toggle('hidden');
       if(!playerUI.classList.contains('hidden')) resetUITimeout();
@@ -512,7 +547,7 @@
     video.addEventListener('mousemove', resetUITimeout);
     video.addEventListener('touchstart', resetUITimeout);
 
-    // أزرار التحكم
+    // أزرار التحكم 10 ثواني تعمل الآن بشكل سليم
     function togglePlayPause() {
       const icon = document.querySelector('#playPauseBtn i');
       if (video.paused) { video.play(); icon.className = 'fas fa-pause'; } 
@@ -521,7 +556,9 @@
     }
 
     function skipVideo(seconds) {
-      if(!isLiveStream) video.currentTime += seconds;
+      if(!isLiveStream && video.duration) {
+        video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + seconds));
+      }
       resetUITimeout();
     }
 
@@ -543,30 +580,93 @@
       resetUITimeout();
     }
 
-    // تحديث شريط التقدم للأفلام والمسلسلات
+    // تحديث شريط التقدم وحفظ التقدم تلقائياً
     video.addEventListener('timeupdate', () => {
-      if (isLiveStream || !video.duration) return;
+      if (isLiveStream || !video.duration || isDraggingProgress) return;
+      
       const percent = (video.currentTime / video.duration) * 100;
       document.getElementById('progressFill').style.width = percent + '%';
       document.getElementById('progressThumb').style.right = (100 - percent) + '%';
       
       const formatTime = (time) => {
         let mins = Math.floor(time / 60); let secs = Math.floor(time % 60);
+        let hrs = Math.floor(mins / 60); mins = mins % 60;
+        if(hrs > 0) return `${hrs}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
       };
       document.getElementById('timeDisplay').innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+      
+      // حفظ التقدم بانتظام (كل 5 ثواني مثلاً)
+      if (currentMediaId && Math.floor(video.currentTime) % 5 === 0 && video.currentTime > 5) {
+        localStorage.setItem('ahmedtv_resume_' + currentMediaId, video.currentTime);
+      }
     });
-
-    function seekVideo(e) {
-      if(isLiveStream) return;
-      const rect = document.getElementById('progressContainer').getBoundingClientRect();
-      const pos = (e.clientX - rect.left) / rect.width;
-      video.currentTime = pos * video.duration;
-      resetUITimeout();
-    }
 
     video.addEventListener('play', () => document.querySelector('#playPauseBtn i').className = 'fas fa-pause');
     video.addEventListener('pause', () => document.querySelector('#playPauseBtn i').className = 'fas fa-play');
+    video.addEventListener('ended', () => {
+      // تنظيف الذاكرة عند الانتهاء
+      if(currentMediaId) localStorage.removeItem('ahmedtv_resume_' + currentMediaId);
+    });
+
+    /* ---------------------------------------------------
+       برمجة سحب شريط التقدم بالإصبع
+    --------------------------------------------------- */
+    const progressContainer = document.getElementById('progressContainer');
+    let isDraggingProgress = false;
+
+    function updateProgressFromEvent(e) {
+      if (isLiveStream || !video.duration) return;
+      const rect = progressContainer.getBoundingClientRect();
+      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+      let pos = (clientX - rect.left) / rect.width;
+      pos = Math.max(0, Math.min(1, pos));
+      
+      video.currentTime = pos * video.duration;
+      
+      const percent = pos * 100;
+      document.getElementById('progressFill').style.width = percent + '%';
+      document.getElementById('progressThumb').style.right = (100 - percent) + '%';
+    }
+
+    // للمس عبر الموبايل (Touch)
+    progressContainer.addEventListener('touchstart', (e) => {
+      if(isLiveStream) return;
+      isDraggingProgress = true;
+      resetUITimeout();
+      updateProgressFromEvent(e);
+    }, {passive: true});
+
+    progressContainer.addEventListener('touchmove', (e) => {
+      if(!isDraggingProgress) return;
+      e.preventDefault(); // لمنع تحرك الشاشة أثناء سحب الشريط
+      resetUITimeout();
+      updateProgressFromEvent(e);
+    }, {passive: false});
+
+    progressContainer.addEventListener('touchend', () => {
+      isDraggingProgress = false;
+    });
+
+    // للماوس عبر الكمبيوتر
+    progressContainer.addEventListener('mousedown', (e) => {
+      if(isLiveStream) return;
+      isDraggingProgress = true;
+      resetUITimeout();
+      updateProgressFromEvent(e);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if(isDraggingProgress) {
+        resetUITimeout();
+        updateProgressFromEvent(e);
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDraggingProgress = false;
+    });
+
   </script>
 </body>
 </html>
