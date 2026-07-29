@@ -324,7 +324,7 @@
       const grid = document.getElementById('contentGrid');
       const loadMoreContainer = document.getElementById('loadMoreContainer');
       loadMoreContainer.innerHTML = '';
-      if (!filteredList || filteredList.length === 0) { grid.innerHTML = '<div class="loader">لا توجد عناصر</div>'; return; }
+      if (!filteredList || filteredList.length === 0) { grid.innerHTML = '<div class="loader">لا توجد عناصر في المفضلة أو القائمة</div>'; return; }
 
       const batch = filteredList.slice(displayedCount, displayedCount + pageSize);
       batch.forEach(item => {
@@ -342,14 +342,15 @@
         };
         card.appendChild(favBtn);
 
-        const isLive = currentSection === 'live' || (currentSection === 'favorites' && item.stream_icon && !item.container_extension && !item.num && !item.series_id);
-        const isSeries = currentSection === 'series' || (currentSection === 'favorites' && item.series_id);
+        // تحديد نوع العنصر بدقة ليعمل بسلاسة حتى داخل قسم المفضلة
+        const isSeriesItem = item.series_id !== undefined;
+        const isLiveItem = item.stream_icon && !item.container_extension && !item.series_id && !item.num;
 
-        if (isLive) {
+        if (currentSection === 'live' || (currentSection === 'favorites' && isLiveItem)) {
           const streamUrl = `${currentActiveAccount.host}/live/${currentActiveAccount.user}/${currentActiveAccount.pass}/${id}.m3u8`;
           card.onclick = () => showAdAndPlay(streamUrl, true, item.name, id);
           card.innerHTML += `<span class="live-badge">مباشر</span><img src="${item.stream_icon || ''}" class="card-img" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
-        } else if (isSeries) {
+        } else if (currentSection === 'series' || (currentSection === 'favorites' && isSeriesItem)) {
           card.onclick = () => openSeriesDetails(id, item.name, item.cover || item.stream_icon);
           card.innerHTML += `<img src="${item.cover || item.stream_icon || ''}" class="card-poster" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         } else {
@@ -443,7 +444,6 @@
       isLiveStream = isLive;
       currentMediaId = id;
       
-      // تفعيل وضع الدوران وملء الشاشة تلقائياً عند فتح المشغل
       lockScreenLandscape();
 
       if(isLive) {
@@ -481,7 +481,6 @@
       }, 1000);
     }
 
-    // دوال تدوير الشاشة وملء الشاشة المحسنة
     function lockScreenLandscape() {
       try {
         const docEl = document.documentElement;
@@ -542,8 +541,6 @@
       video.src = "";
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       document.getElementById('videoModal').style.display = 'none';
-      
-      // إعادة الشاشة لوضعها الطبيعي وإلغاء ملء الشاشة عند الإغلاق
       unlockScreenOrientation();
     }
 
