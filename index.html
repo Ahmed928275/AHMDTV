@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AHMED TV | Full Pro Edition</title>
+  <title>AHMED TV | Ultimate Android Edition</title>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;400;600;700&display=swap" rel="stylesheet">
@@ -11,12 +11,11 @@
 
   <style>
     :root {
-      --ios-blur: blur(35px);
+      --ios-blur: blur(20px);
       --ios-bg: rgba(255, 255, 255, 0.08);
       --ios-border: rgba(255, 255, 255, 0.15);
       --accent: #007aff;
       --danger: #ff3b30;
-      --player-bg: #000;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -26,109 +25,103 @@
       background: #000;
       color: #fff;
       min-height: 100vh;
-      background: radial-gradient(circle at top right, #1a2a3a 0%, #000 100%);
       overflow-x: hidden;
-      padding-bottom: 120px;
+      padding-bottom: 110px;
     }
 
-    header { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(0, 0, 0, 0.65); backdrop-filter: var(--ios-blur); padding: 12px 20px 15px; border-bottom: 0.5px solid var(--ios-border); }
-    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .menu-btn { background: var(--ios-bg); border: 0.5px solid var(--ios-border); width: 40px; height: 40px; border-radius: 12px; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    header { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(10, 10, 12, 0.85); backdrop-filter: var(--ios-blur); padding: 10px 15px 12px; border-bottom: 0.5px solid var(--ios-border); }
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .menu-btn { background: var(--ios-bg); border: 0.5px solid var(--ios-border); width: 38px; height: 38px; border-radius: 10px; color: #fff; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .brand-container { text-align: center; flex: 1; }
-    .brand-name { font-size: 22px; font-weight: 700; letter-spacing: 1px; text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+    .brand-name { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
     .brand-name span { color: var(--accent); }
-    .search-container { display: flex; align-items: center; background: rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 8px 15px; border: 0.5px solid var(--ios-border); }
-    .search-container input { background: none; border: none; color: white; width: 100%; outline: none; font-family: inherit; font-size: 14px; margin-right: 10px; }
+    .search-container { display: flex; align-items: center; background: rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 6px 12px; border: 0.5px solid var(--ios-border); }
+    .search-container input { background: none; border: none; color: white; width: 100%; outline: none; font-family: inherit; font-size: 13px; margin-right: 8px; }
 
-    .main-cats { display: flex; gap: 8px; padding: 130px 20px 10px; max-width: 600px; margin: 0 auto; }
-    .main-cat-btn { flex: 1; padding: 10px; background: var(--ios-bg); border: 0.5px solid var(--ios-border); border-radius: 14px; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; font-family: inherit; transition: 0.3s; }
-    .main-cat-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4); }
+    .main-cats { display: flex; gap: 6px; padding: 120px 15px 8px; max-width: 600px; margin: 0 auto; }
+    .main-cat-btn { flex: 1; padding: 9px; background: var(--ios-bg); border: 0.5px solid var(--ios-border); border-radius: 12px; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; font-family: inherit; }
+    .main-cat-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-    .sub-cats { display: flex; gap: 8px; padding: 0 20px 15px; overflow-x: auto; white-space: nowrap; max-width: 600px; margin: 0 auto; }
+    .sub-cats { display: flex; gap: 6px; padding: 0 15px 12px; overflow-x: auto; white-space: nowrap; max-width: 600px; margin: 0 auto; }
     .sub-cats::-webkit-scrollbar { display: none; }
-    .sub-cat-btn { padding: 6px 14px; background: var(--ios-bg); border: 0.5px solid var(--ios-border); border-radius: 12px; color: rgba(255,255,255,0.6); font-size: 12px; cursor: pointer; font-family: inherit; transition: 0.2s; }
+    .sub-cat-btn { padding: 5px 12px; background: var(--ios-bg); border: 0.5px solid var(--ios-border); border-radius: 10px; color: rgba(255,255,255,0.6); font-size: 11px; cursor: pointer; font-family: inherit; }
     .sub-cat-btn.active { background: rgba(255,255,255,0.2); color: #fff; border-color: #fff; font-weight: 600; }
 
-    .app-container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
-    .content-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .glass-card { background: var(--ios-bg); backdrop-filter: var(--ios-blur); border: 1px solid var(--ios-border); border-radius: 22px; padding: 12px; text-align: center; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; text-decoration: none; color: white; }
-    .glass-card:active { transform: scale(0.96); background: rgba(255,255,255,0.15); }
-    .card-img { width: 100%; height: 110px; object-fit: contain; border-radius: 14px; background: rgba(0,0,0,0.2); padding: 8px; margin-bottom: 10px; }
-    .card-poster { width: 100%; height: 160px; object-fit: cover; border-radius: 14px; margin-bottom: 10px; }
-    .card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-    .live-badge { position: absolute; top: 10px; right: 10px; background: var(--danger); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 6px; font-weight: bold; }
-    .fav-card-btn { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 0.5px solid var(--ios-border); width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: 0.2s; }
-    .fav-card-btn.active { color: var(--danger); background: rgba(255, 59, 48, 0.15); border-color: var(--danger); }
+    .app-container { padding: 0 15px; max-width: 600px; margin: 0 auto; }
+    .content-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .glass-card { background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 16px; padding: 10px; text-align: center; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: white; will-change: transform; }
+    .card-img { width: 100%; height: 95px; object-fit: contain; border-radius: 10px; background: rgba(0,0,0,0.3); padding: 5px; margin-bottom: 8px; }
+    .card-poster { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; }
+    .card-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+    .live-badge { position: absolute; top: 8px; right: 8px; background: var(--danger); color: #fff; font-size: 8px; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
+    .fav-card-btn { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.6); border: 0.5px solid var(--ios-border); width: 28px; height: 28px; border-radius: 50%; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; }
+    .fav-card-btn.active { color: var(--danger); background: rgba(255, 59, 48, 0.2); border-color: var(--danger); }
 
-    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2500; display: none; backdrop-filter: blur(5px); }
-    .side-drawer { position: fixed; top: 0; right: -280px; width: 280px; height: 100vh; background: rgba(18, 18, 20, 0.95); backdrop-filter: var(--ios-blur); z-index: 3000; border-left: 1px solid var(--ios-border); transition: right 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); display: flex; flex-direction: column; }
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2500; display: none; }
+    .side-drawer { position: fixed; top: 0; right: -260px; width: 260px; height: 100vh; background: rgba(18, 18, 20, 0.98); z-index: 3000; border-left: 1px solid var(--ios-border); transition: right 0.3s ease; display: flex; flex-direction: column; }
     .side-drawer.open { right: 0; }
-    .drawer-header { padding: 35px 20px; background: linear-gradient(135deg, rgba(0,122,255,0.3), transparent); text-align: center; border-bottom: 0.5px solid var(--ios-border); }
-    .drawer-avatar { width: 65px; height: 65px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--accent); }
-    .drawer-menu-list { padding: 15px 0; flex: 1; }
-    .drawer-item { padding: 15px 22px; display: flex; align-items: center; gap: 15px; color: #fff; font-size: 14px; text-decoration: none; cursor: pointer; transition: 0.2s; border-right: 3px solid transparent; }
-    .drawer-item:active { background: rgba(255,255,255,0.06); color: var(--accent); border-right-color: var(--accent); }
-    .drawer-item i { font-size: 18px; width: 24px; text-align: center; color: var(--accent); }
+    .drawer-header { padding: 30px 15px; text-align: center; border-bottom: 0.5px solid var(--ios-border); }
+    .drawer-menu-list { padding: 10px 0; flex: 1; }
+    .drawer-item { padding: 12px 18px; display: flex; align-items: center; gap: 12px; color: #fff; font-size: 13px; text-decoration: none; cursor: pointer; }
+    .drawer-item i { font-size: 16px; width: 20px; text-align: center; color: var(--accent); }
 
-    #seriesModal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: var(--ios-blur); z-index: 4000; display: none; flex-direction: column; padding: 20px; }
-    .series-header { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
-    .series-poster { width: 100px; height: 140px; object-fit: cover; border-radius: 12px; border: 1px solid var(--ios-border); }
-    .season-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
+    #seriesModal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; display: none; flex-direction: column; padding: 15px; }
+    .series-header { display: flex; gap: 12px; margin-bottom: 15px; align-items: center; }
+    .series-poster { width: 90px; height: 130px; object-fit: cover; border-radius: 10px; border: 1px solid var(--ios-border); }
+    .season-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; }
     .season-tabs::-webkit-scrollbar { display: none; }
-    .season-tab { padding: 8px 16px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 10px; color: #fff; font-size: 13px; cursor: pointer; white-space: nowrap; }
+    .season-tab { padding: 6px 12px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 8px; color: #fff; font-size: 12px; cursor: pointer; white-space: nowrap; }
     .season-tab.active { background: var(--accent); border-color: var(--accent); }
     
-    .episodes-list { display: flex; flex-direction: row; gap: 12px; overflow-x: auto; padding-bottom: 20px; }
+    .episodes-list { display: flex; flex-direction: row; gap: 10px; overflow-x: auto; padding-bottom: 15px; }
     .episodes-list::-webkit-scrollbar { display: none; }
-    .episode-item { display: flex; flex-direction: column; min-width: 140px; background: var(--ios-bg); border: 1px solid var(--ios-border); padding: 10px; border-radius: 14px; cursor: pointer; }
-    .episode-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; background: #111; margin-bottom: 8px; }
-    .episode-info h4 { font-size: 12px; text-align: center; white-space: normal; }
+    .episode-item { display: flex; flex-direction: column; min-width: 130px; background: var(--ios-bg); border: 1px solid var(--ios-border); padding: 8px; border-radius: 12px; cursor: pointer; }
+    .episode-img { width: 100%; height: 75px; object-fit: cover; border-radius: 6px; background: #111; margin-bottom: 6px; }
+    .episode-info h4 { font-size: 11px; text-align: center; }
 
-    /* تحسين المشغل ليتوافق مع WebView وأبعاد الشاشة الطبيعية */
+    /* تحسين المشغل ليعمل بوضع ملء الشاشة الفعلي بالكامل داخل الأندرويد */
     #videoModal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; }
-    
     .player-wrapper { position: relative; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
     
-    video { width: 100%; height: 100%; max-height: 100vh; object-fit: contain; background: #000; outline: none; }
+    /* جعل الفيديو يملأ الشاشة تماماً بدون أي حواف سوداء مزعجة وضبط الأبعاد */
+    video { width: 100%; height: 100%; object-fit: fill; background: #000; outline: none; }
 
-    .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; background: rgba(0, 0, 0, 0.45); transition: opacity 0.3s ease; }
+    .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; background: rgba(0, 0, 0, 0.4); transition: opacity 0.3s ease; }
     .player-ui.hidden { opacity: 0; pointer-events: none; }
 
     .top-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-    .live-indicator { background: var(--danger); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
-    .live-indicator .dot { width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: blink 1s infinite; }
+    .live-indicator { background: var(--danger); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 15px; display: flex; align-items: center; gap: 4px; }
+    .live-indicator .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity: 0; } }
     
-    .player-title { color: #fff; font-size: 15px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); flex: 1; text-align: center; direction: ltr; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 10px; }
-    .btn-back-player { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+    .player-title { color: #fff; font-size: 14px; font-weight: 700; flex: 1; text-align: center; direction: ltr; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 10px; }
+    .btn-back-player { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-    .center-controls { display: flex; justify-content: center; align-items: center; gap: 50px; }
-    .btn-skip { background: none; border: none; color: #fff; font-size: 26px; cursor: pointer; transition: 0.2s; opacity: 0.9; }
-    .btn-skip:active { opacity: 1; transform: scale(0.85); }
-    .btn-play-pause { width: 70px; height: 70px; border-radius: 50%; background: rgba(0, 122, 255, 0.3); border: 2px solid var(--accent); color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(5px); }
+    .center-controls { display: flex; justify-content: center; align-items: center; gap: 40px; }
+    .btn-skip { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+    .btn-play-pause { width: 65px; height: 65px; border-radius: 50%; background: rgba(0, 122, 255, 0.4); border: 2px solid var(--accent); color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-    .bottom-controls { display: flex; align-items: center; gap: 15px; width: 100%; direction: ltr; padding-bottom: 10px; }
-    .btn-bottom { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; opacity: 0.8; }
+    .bottom-controls { display: flex; align-items: center; gap: 12px; width: 100%; direction: ltr; padding-bottom: 5px; }
+    .btn-bottom { background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; }
     
-    .progress-container { flex: 1; display: flex; align-items: center; position: relative; height: 35px; cursor: pointer; touch-action: none; }
-    .progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.25); border-radius: 3px; position: relative; pointer-events: none; }
+    .progress-container { flex: 1; display: flex; align-items: center; position: relative; height: 30px; cursor: pointer; touch-action: none; }
+    .progress-bg { width: 100%; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; position: relative; pointer-events: none; }
     .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; width: 0%; position: absolute; left: 0; top: 0; }
-    .progress-thumb { width: 16px; height: 16px; background: #fff; border-radius: 50%; position: absolute; top: 50%; transform: translateY(-50%) translateX(50%); right: 100%; box-shadow: 0 0 8px rgba(0,0,0,0.6); pointer-events: none; }
-    
-    .time-display { color: #fff; font-size: 12px; font-weight: 600; min-width: 85px; text-align: right; }
+    .progress-thumb { width: 14px; height: 14px; background: #fff; border-radius: 50%; position: absolute; top: 50%; transform: translateY(-50%) translateX(50%); right: 100%; pointer-events: none; }
+    .time-display { color: #fff; font-size: 11px; font-weight: 600; min-width: 75px; text-align: right; }
 
     #adOverlay { position: absolute; inset: 0; background: #000; z-index: 20; display: none; flex-direction: column; }
-    .ad-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0,0,0,0.8); position: absolute; top: 0; width: 100%; z-index: 21; }
-    .ad-badge { background: #f1c40f; color: #000; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-    .ad-timer { color: #fff; font-size: 14px; }
+    .ad-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(0,0,0,0.85); position: absolute; top: 0; width: 100%; z-index: 21; }
+    .ad-badge { background: #f1c40f; color: #000; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+    .ad-timer { color: #fff; font-size: 13px; }
     .ad-iframe { width: 100%; height: 100%; border: none; background: #111; }
 
-    .tab-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; height: 65px; background: rgba(25, 25, 25, 0.75); backdrop-filter: var(--ios-blur); border-radius: 32px; border: 1.5px solid var(--ios-border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .tab-item { color: rgba(255,255,255,0.4); text-decoration: none; text-align: center; font-size: 10px; cursor: pointer; flex: 1; transition: 0.2s; }
-    .tab-item i { font-size: 20px; display: block; margin-bottom: 3px; }
+    .tab-bar { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; height: 60px; background: rgba(20, 20, 22, 0.85); backdrop-filter: var(--ios-blur); border-radius: 28px; border: 1.5px solid var(--ios-border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
+    .tab-item { color: rgba(255,255,255,0.4); text-decoration: none; text-align: center; font-size: 10px; cursor: pointer; flex: 1; }
+    .tab-item i { font-size: 18px; display: block; margin-bottom: 2px; }
     .tab-item.active { color: var(--accent); font-weight: 600; }
-    .loader { text-align: center; grid-column: span 2; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px; }
-    .load-more-btn { grid-column: span 2; padding: 12px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 14px; color: #fff; font-weight: 600; cursor: pointer; text-align: center; margin-top: 15px; }
+    .loader { text-align: center; grid-column: span 2; padding: 30px; color: rgba(255,255,255,0.4); font-size: 13px; }
+    .load-more-btn { grid-column: span 2; padding: 10px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; text-align: center; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -136,9 +129,8 @@
   <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
   <div class="side-drawer" id="sideDrawer">
     <div class="drawer-header">
-      <div class="drawer-avatar"><i class="fas fa-tv"></i></div>
-      <h3 style="font-size: 18px;">AHMED TV</h3>
-      <p style="font-size: 11px; opacity: 0.6; margin-top: 4px;">متعدد السيرفرات الاحترافي</p>
+      <div style="font-size: 24px; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-tv"></i></div>
+      <h3 style="font-size: 16px;">AHMED TV</h3>
     </div>
     <div class="drawer-menu-list">
       <a href="https://t.me/AHMEDTVGY" target="_blank" class="drawer-item"><i class="fab fa-telegram"></i> قناة التليجرام</a>
@@ -147,13 +139,13 @@
   </div>
 
   <div id="seriesModal">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h3 id="seriesModalTitle" style="font-size:16px;">التفاصيل</h3>
-      <button onclick="closeSeriesModal()" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;"><i class="fas fa-xmark"></i></button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 id="seriesModalTitle" style="font-size:15px;">التفاصيل</h3>
+      <button onclick="closeSeriesModal()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;"><i class="fas fa-xmark"></i></button>
     </div>
     <div class="series-header">
       <img id="seriesModalPoster" class="series-poster" src="" alt="">
-      <div><p id="seriesModalDesc" style="font-size:12px; opacity:0.7; max-height:90px; overflow-y:auto;"></p></div>
+      <div><p id="seriesModalDesc" style="font-size:11px; opacity:0.7; max-height:80px; overflow-y:auto;"></p></div>
     </div>
     <div class="season-tabs" id="seasonTabs"></div>
     <div class="episodes-list" id="episodesList"></div>
@@ -161,7 +153,6 @@
 
   <div id="videoModal">
     <div class="player-wrapper" id="playerWrapper" onclick="toggleControls()">
-      <!-- خصائص مدعومة بالكامل داخل تطبيق الأندرويد WebView -->
       <video id="videoPlayer" playsinline webkit-playsinline></video>
       
       <div id="adOverlay">
@@ -206,11 +197,11 @@
     <div class="header-top">
       <button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
       <div class="brand-container"><div class="brand-name">AHMED <span>TV</span></div></div>
-      <div style="width: 40px;"></div>
+      <div style="width: 38px;"></div>
     </div>
     <div class="search-container">
-      <i class="fas fa-search" style="color: rgba(255,255,255,0.4);"></i>
-      <input type="text" id="searchInput" placeholder="ابحث عن قناة أو فيلم..." oninput="handleSearch(this.value)">
+      <i class="fas fa-search" style="color: rgba(255,255,255,0.4); font-size: 13px;"></i>
+      <input type="text" id="searchInput" placeholder="ابحث..." oninput="handleSearch(this.value)">
     </div>
   </header>
 
@@ -241,8 +232,13 @@
     ];
 
     let currentSection = 'live', categoriesList = [], fullDataList = [], filteredList = [], displayedCount = 0;
-    const pageSize = 20;
-    let favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
+    const pageSize = 16;
+    let favorites = [];
+    
+    try {
+      favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
+    } catch(e) { favorites = []; }
+
     let currentActiveAccount = accounts[0];
 
     window.onload = () => { switchTab('live'); };
@@ -316,7 +312,12 @@
 
     function renderFavorites() {
       document.getElementById('subCatsBar').innerHTML = '';
-      filteredList = favorites; displayedCount = 0;
+      try {
+        favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
+      } catch(e) { favorites = []; }
+      
+      filteredList = favorites; 
+      displayedCount = 0;
       document.getElementById('contentGrid').innerHTML = '';
       renderBatch();
     }
@@ -343,20 +344,20 @@
         };
         card.appendChild(favBtn);
 
-        const isLive = currentSection === 'live' || (currentSection === 'favorites' && item.stream_icon && !item.container_extension && !item.num);
+        const isLive = currentSection === 'live' || (currentSection === 'favorites' && item.stream_icon && !item.container_extension && !item.num && !item.series_id);
         const isSeries = currentSection === 'series' || (currentSection === 'favorites' && item.series_id);
 
         if (isLive) {
           const streamUrl = `${currentActiveAccount.host}/live/${currentActiveAccount.user}/${currentActiveAccount.pass}/${id}.m3u8`;
           card.onclick = () => showAdAndPlay(streamUrl, true, item.name, id);
-          card.innerHTML += `<span class="live-badge">مباشر</span><img src="${item.stream_icon || ''}" class="card-img" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
+          card.innerHTML += `<span class="live-badge">مباشر</span><img src="${item.stream_icon || ''}" class="card-img" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         } else if (isSeries) {
           card.onclick = () => openSeriesDetails(id, item.name, item.cover || item.stream_icon);
-          card.innerHTML += `<img src="${item.cover || item.stream_icon}" class="card-poster" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
+          card.innerHTML += `<img src="${item.cover || item.stream_icon || ''}" class="card-poster" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         } else {
           const mediaUrl = `${currentActiveAccount.host}/movie/${currentActiveAccount.user}/${currentActiveAccount.pass}/${id}.${item.container_extension || 'mp4'}`;
           card.onclick = () => showAdAndPlay(mediaUrl, false, item.name, id);
-          card.innerHTML += `<img src="${item.stream_icon}" class="card-poster" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
+          card.innerHTML += `<img src="${item.stream_icon || ''}" class="card-poster" loading="lazy" onerror="this.style.display='none'"><div class="card-title">${item.name}</div>`;
         }
         grid.appendChild(card);
       });
@@ -416,8 +417,8 @@
         const url = `${currentActiveAccount.host}/series/${currentActiveAccount.user}/${currentActiveAccount.pass}/${ep.id}.${ep.container_extension || 'mp4'}`;
         item.onclick = () => { closeSeriesModal(); showAdAndPlay(url, false, `الحلقة ${ep.episode_num} - ${sTitle}`, 'ep_' + ep.id); };
         item.innerHTML = `
-          <img src="${ep.info.movie_image || ''}" class="episode-img" onerror="this.style.display='none'">
-          <div class="episode-info"><h4>الحلقة ${ep.episode_num}: ${ep.title}</h4></div>`;
+          <img src="${ep.info.movie_image || ''}" class="episode-img" loading="lazy" onerror="this.style.display='none'">
+          <div class="episode-info"><h4>الحلقة ${ep.episode_num}</h4></div>`;
         epsList.appendChild(item);
       });
     }
@@ -431,9 +432,6 @@
       displayedCount = 0; document.getElementById('contentGrid').innerHTML = ''; renderBatch();
     }
 
-    /* ---------------------------------------------------
-       المشغل المخصص المحسّن لسرعة التشغيل الفوري والتحكم السلس
-    --------------------------------------------------- */
     let hlsInstance = null;
     const video = document.getElementById('videoPlayer');
     const playerUI = document.getElementById('playerUI');
@@ -450,7 +448,7 @@
       if(isLive) {
         document.getElementById('liveIndicator').style.display = 'flex';
         document.getElementById('timeDisplay').innerText = 'مباشر';
-        document.getElementById('progressContainer').style.opacity = '0.5';
+        document.getElementById('progressContainer').style.opacity = '0.3';
       } else {
         document.getElementById('liveIndicator').style.display = 'none';
         document.getElementById('progressContainer').style.opacity = '1';
@@ -483,21 +481,16 @@
     }
 
     function startVideo(url, isLive) {
+      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+      
       if (isLive && Hls.isSupported()) {
-        if (hlsInstance) hlsInstance.destroy();
-        hlsInstance = new Hls({
-          maxBufferLength: 30,
-          maxMaxBufferLength: 60,
-          liveSyncDurationCount: 3,
-        }); 
+        hlsInstance = new Hls({ maxBufferLength: 15, liveSyncDurationCount: 2 }); 
         hlsInstance.loadSource(url); 
         hlsInstance.attachMedia(video);
-        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
       } else {
         video.src = url; 
         video.load();
-        
-        // استرجاع التقدم بدقة فورية وسريعة
         if (!isLiveStream && currentMediaId) {
           const savedTime = localStorage.getItem('ahmedtv_resume_' + currentMediaId);
           if (savedTime && !isNaN(savedTime)) {
@@ -515,7 +508,7 @@
       }
       video.pause(); 
       video.src = "";
-      if (hlsInstance) hlsInstance.destroy();
+      if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
       document.getElementById('videoModal').style.display = 'none';
     }
 
@@ -526,11 +519,8 @@
 
     function resetUITimeout() {
       clearTimeout(uiTimeout);
-      uiTimeout = setTimeout(() => { playerUI.classList.add('hidden'); }, 3500);
+      uiTimeout = setTimeout(() => { playerUI.classList.add('hidden'); }, 3000);
     }
-
-    video.addEventListener('mousemove', resetUITimeout);
-    video.addEventListener('touchstart', resetUITimeout);
 
     function togglePlayPause() {
       const icon = document.querySelector('#playPauseBtn i');
@@ -561,36 +551,17 @@
       resetUITimeout();
     }
 
-    // تحديث شريط التقدم الفوري ودون تأخير
     video.addEventListener('timeupdate', () => {
       if (isLiveStream || !video.duration || isDraggingProgress) return;
-      
       const percent = (video.currentTime / video.duration) * 100;
       document.getElementById('progressFill').style.width = percent + '%';
       document.getElementById('progressThumb').style.right = (100 - percent) + '%';
       
-      const formatTime = (time) => {
-        let mins = Math.floor(time / 60); let secs = Math.floor(time % 60);
-        let hrs = Math.floor(mins / 60); mins = mins % 60;
-        if(hrs > 0) return `${hrs}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-      };
-      document.getElementById('timeDisplay').innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
-      
-      if (currentMediaId && Math.floor(video.currentTime) % 5 === 0 && video.currentTime > 5) {
-        localStorage.setItem('ahmedtv_resume_' + currentMediaId, video.currentTime);
-      }
+      let mins = Math.floor(video.currentTime / 60); let secs = Math.floor(video.currentTime % 60);
+      let dmins = Math.floor(video.duration / 60); let dsecs = Math.floor(video.duration % 60);
+      document.getElementById('timeDisplay').innerText = `${mins}:${secs<10?'0':''}${secs} / ${dmins}:${dsecs<10?'0':''}${dsecs}`;
     });
 
-    video.addEventListener('play', () => document.querySelector('#playPauseBtn i').className = 'fas fa-pause');
-    video.addEventListener('pause', () => document.querySelector('#playPauseBtn i').className = 'fas fa-play');
-    video.addEventListener('ended', () => {
-      if(currentMediaId) localStorage.removeItem('ahmedtv_resume_' + currentMediaId);
-    });
-
-    /* ---------------------------------------------------
-       تحسين سحب شريط التقدم بالإصبع داخل الـ WebView
-    --------------------------------------------------- */
     const progressContainer = document.getElementById('progressContainer');
     let isDraggingProgress = false;
 
@@ -600,49 +571,18 @@
       const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
       let pos = (clientX - rect.left) / rect.width;
       pos = Math.max(0, Math.min(1, pos));
-      
       video.currentTime = pos * video.duration;
-      
       const percent = pos * 100;
       document.getElementById('progressFill').style.width = percent + '%';
       document.getElementById('progressThumb').style.right = (100 - percent) + '%';
     }
 
-    progressContainer.addEventListener('touchstart', (e) => {
-      if(isLiveStream) return;
-      isDraggingProgress = true;
-      resetUITimeout();
-      updateProgressFromEvent(e);
-    }, {passive: true});
-
-    progressContainer.addEventListener('touchmove', (e) => {
-      if(!isDraggingProgress) return;
-      resetUITimeout();
-      updateProgressFromEvent(e);
-    }, {passive: true});
-
-    progressContainer.addEventListener('touchend', () => {
-      isDraggingProgress = false;
-    });
-
-    progressContainer.addEventListener('mousedown', (e) => {
-      if(isLiveStream) return;
-      isDraggingProgress = true;
-      resetUITimeout();
-      updateProgressFromEvent(e);
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if(isDraggingProgress) {
-        resetUITimeout();
-        updateProgressFromEvent(e);
-      }
-    });
-
-    document.addEventListener('mouseup', () => {
-      isDraggingProgress = false;
-    });
-
+    progressContainer.addEventListener('touchstart', (e) => { if(isLiveStream) return; isDraggingProgress = true; updateProgressFromEvent(e); }, {passive: true});
+    progressContainer.addEventListener('touchmove', (e) => { if(!isDraggingProgress) return; updateProgressFromEvent(e); }, {passive: true});
+    progressContainer.addEventListener('touchend', () => { isDraggingProgress = false; });
+    progressContainer.addEventListener('mousedown', (e) => { if(isLiveStream) return; isDraggingProgress = true; updateProgressFromEvent(e); });
+    document.addEventListener('mousemove', (e) => { if(isDraggingProgress) updateProgressFromEvent(e); });
+    document.addEventListener('mouseup', () => { isDraggingProgress = false; });
   </script>
 </body>
 </html>
