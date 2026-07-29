@@ -16,7 +16,7 @@
       --ios-border: rgba(255, 255, 255, 0.15);
       --accent: #007aff;
       --danger: #ff3b30;
-      --player-bg: #0a111a;
+      --player-bg: #000;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -31,7 +31,6 @@
       padding-bottom: 120px;
     }
 
-    /* الهيدر والقوائم */
     header { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(0, 0, 0, 0.65); backdrop-filter: var(--ios-blur); padding: 12px 20px 15px; border-bottom: 0.5px solid var(--ios-border); }
     .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .menu-btn { background: var(--ios-bg); border: 0.5px solid var(--ios-border); width: 40px; height: 40px; border-radius: 12px; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -61,7 +60,6 @@
     .fav-card-btn { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 0.5px solid var(--ios-border); width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: 0.2s; }
     .fav-card-btn.active { color: var(--danger); background: rgba(255, 59, 48, 0.15); border-color: var(--danger); }
 
-    /* القائمة الجانبية */
     .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2500; display: none; backdrop-filter: blur(5px); }
     .side-drawer { position: fixed; top: 0; right: -280px; width: 280px; height: 100vh; background: rgba(18, 18, 20, 0.95); backdrop-filter: var(--ios-blur); z-index: 3000; border-left: 1px solid var(--ios-border); transition: right 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); display: flex; flex-direction: column; }
     .side-drawer.open { right: 0; }
@@ -72,7 +70,6 @@
     .drawer-item:active { background: rgba(255,255,255,0.06); color: var(--accent); border-right-color: var(--accent); }
     .drawer-item i { font-size: 18px; width: 24px; text-align: center; color: var(--accent); }
 
-    /* تفاصيل المسلسلات - التمرير الأفقي للحلقات */
     #seriesModal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: var(--ios-blur); z-index: 4000; display: none; flex-direction: column; padding: 20px; }
     .series-header { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
     .series-poster { width: 100px; height: 140px; object-fit: cover; border-radius: 12px; border: 1px solid var(--ios-border); }
@@ -81,59 +78,51 @@
     .season-tab { padding: 8px 16px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 10px; color: #fff; font-size: 13px; cursor: pointer; white-space: nowrap; }
     .season-tab.active { background: var(--accent); border-color: var(--accent); }
     
-    /* التعديل الجديد للحلقات بجانب بعض */
     .episodes-list { display: flex; flex-direction: row; gap: 12px; overflow-x: auto; padding-bottom: 20px; }
     .episodes-list::-webkit-scrollbar { display: none; }
     .episode-item { display: flex; flex-direction: column; min-width: 140px; background: var(--ios-bg); border: 1px solid var(--ios-border); padding: 10px; border-radius: 14px; cursor: pointer; }
     .episode-img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; background: #111; margin-bottom: 8px; }
     .episode-info h4 { font-size: 12px; text-align: center; white-space: normal; }
 
-    /* المشغل المخصص - مطابق للصورة والمطلوب */
-    #videoModal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; width: 100vw; height: 100vh; flex-direction: column; }
+    /* تحسين المشغل ليتوافق مع WebView وأبعاد الشاشة الطبيعية */
+    #videoModal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; width: 100vw; height: 100vh; flex-direction: column; justify-content: center; align-items: center; }
     
-    .player-wrapper { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; }
-    video { width: 100%; height: 100%; object-fit: contain; background: #000; position: absolute; }
+    .player-wrapper { position: relative; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
     
-    .player-grid-overlay { position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 10% 100%; pointer-events: none; z-index: 1; }
+    video { width: 100%; height: 100%; max-height: 100vh; object-fit: contain; background: #000; outline: none; }
 
-    .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; background: rgba(0, 0, 0, 0.5); transition: opacity 0.3s ease; }
+    .player-ui { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; background: rgba(0, 0, 0, 0.45); transition: opacity 0.3s ease; }
     .player-ui.hidden { opacity: 0; pointer-events: none; }
 
-    /* أدوات التحكم العلوية */
     .top-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; }
     .live-indicator { background: var(--danger); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
     .live-indicator .dot { width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity: 0; } }
     
-    .player-title { color: #fff; font-size: 16px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); flex: 1; text-align: center; direction: ltr; }
+    .player-title { color: #fff; font-size: 15px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); flex: 1; text-align: center; direction: ltr; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 10px; }
     .btn-back-player { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
 
-    /* أدوات التحكم الوسطى (أزرار 10 ثواني) */
     .center-controls { display: flex; justify-content: center; align-items: center; gap: 50px; }
-    .btn-skip { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; transition: 0.2s; opacity: 0.8; }
+    .btn-skip { background: none; border: none; color: #fff; font-size: 26px; cursor: pointer; transition: 0.2s; opacity: 0.9; }
     .btn-skip:active { opacity: 1; transform: scale(0.85); }
-    .btn-play-pause { width: 75px; height: 75px; border-radius: 50%; background: rgba(0, 122, 255, 0.25); border: 2px solid var(--accent); color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s; }
-    .btn-play-pause:active { transform: scale(0.9); background: rgba(0, 122, 255, 0.5); }
+    .btn-play-pause { width: 70px; height: 70px; border-radius: 50%; background: rgba(0, 122, 255, 0.3); border: 2px solid var(--accent); color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(5px); }
 
-    /* أدوات التحكم السفلية - شريط السحب */
     .bottom-controls { display: flex; align-items: center; gap: 15px; width: 100%; direction: ltr; padding-bottom: 10px; }
-    .btn-bottom { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.8; }
+    .btn-bottom { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; opacity: 0.8; }
     
-    .progress-container { flex: 1; display: flex; align-items: center; position: relative; height: 30px; cursor: pointer; touch-action: none; }
-    .progress-bg { width: 100%; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; position: relative; pointer-events: none; }
+    .progress-container { flex: 1; display: flex; align-items: center; position: relative; height: 35px; cursor: pointer; touch-action: none; }
+    .progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.25); border-radius: 3px; position: relative; pointer-events: none; }
     .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; width: 0%; position: absolute; left: 0; top: 0; }
     .progress-thumb { width: 16px; height: 16px; background: #fff; border-radius: 50%; position: absolute; top: 50%; transform: translateY(-50%) translateX(50%); right: 100%; box-shadow: 0 0 8px rgba(0,0,0,0.6); pointer-events: none; }
     
-    .time-display { color: #fff; font-size: 13px; font-weight: 600; min-width: 90px; text-align: right; }
+    .time-display { color: #fff; font-size: 12px; font-weight: 600; min-width: 85px; text-align: right; }
 
-    /* واجهة الإعلان المنبثق داخل المشغل */
     #adOverlay { position: absolute; inset: 0; background: #000; z-index: 20; display: none; flex-direction: column; }
     .ad-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(0,0,0,0.8); position: absolute; top: 0; width: 100%; z-index: 21; }
     .ad-badge { background: #f1c40f; color: #000; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
     .ad-timer { color: #fff; font-size: 14px; }
     .ad-iframe { width: 100%; height: 100%; border: none; background: #111; }
 
-    /* الشريط السفلي للتطبيق */
     .tab-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; height: 65px; background: rgba(25, 25, 25, 0.75); backdrop-filter: var(--ios-blur); border-radius: 32px; border: 1.5px solid var(--ios-border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .tab-item { color: rgba(255,255,255,0.4); text-decoration: none; text-align: center; font-size: 10px; cursor: pointer; flex: 1; transition: 0.2s; }
     .tab-item i { font-size: 20px; display: block; margin-bottom: 3px; }
@@ -170,13 +159,11 @@
     <div class="episodes-list" id="episodesList"></div>
   </div>
 
-  <!-- المشغل المخصص الجديد -->
   <div id="videoModal">
     <div class="player-wrapper" id="playerWrapper" onclick="toggleControls()">
-      <video id="videoPlayer" playsinline></video>
-      <div class="player-grid-overlay"></div>
+      <!-- خصائص مدعومة بالكامل داخل تطبيق الأندرويد WebView -->
+      <video id="videoPlayer" playsinline webkit-playsinline></video>
       
-      <!-- واجهة الإعلان 7 ثواني -->
       <div id="adOverlay">
         <div class="ad-header">
           <span class="ad-badge">إعلان</span>
@@ -185,7 +172,6 @@
         <iframe id="adIframe" class="ad-iframe" src="about:blank"></iframe>
       </div>
 
-      <!-- أدوات التحكم -->
       <div class="player-ui" id="playerUI">
         <div class="top-controls">
           <div class="live-indicator" id="liveIndicator"><div class="dot"></div> LIVE</div>
@@ -256,7 +242,6 @@
 
     let currentSection = 'live', categoriesList = [], fullDataList = [], filteredList = [], displayedCount = 0;
     const pageSize = 20;
-    // تحميل المفضلة 
     let favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
     let currentActiveAccount = accounts[0];
 
@@ -348,13 +333,12 @@
         card.className = 'glass-card';
         const id = item.stream_id || item.series_id;
         
-        // تعديل زر المفضلة لمنع تداخل النقرات
         const favBtn = document.createElement('button');
         favBtn.className = `fav-card-btn ${isFav(item) ? 'active' : ''}`;
         favBtn.innerHTML = '<i class="fas fa-heart"></i>';
         favBtn.onclick = (e) => {
           e.preventDefault();
-          e.stopPropagation(); // يمنع فتح الفيديو عند ضغط القلب
+          e.stopPropagation();
           toggleFav(favBtn, item);
         };
         card.appendChild(favBtn);
@@ -430,7 +414,6 @@
       eps.forEach(ep => {
         const item = document.createElement('div'); item.className = 'episode-item';
         const url = `${currentActiveAccount.host}/series/${currentActiveAccount.user}/${currentActiveAccount.pass}/${ep.id}.${ep.container_extension || 'mp4'}`;
-        // تمرير معرف الحلقة للتمكن من حفظ تقدم المشاهدة لها بشكل مستقل
         item.onclick = () => { closeSeriesModal(); showAdAndPlay(url, false, `الحلقة ${ep.episode_num} - ${sTitle}`, 'ep_' + ep.id); };
         item.innerHTML = `
           <img src="${ep.info.movie_image || ''}" class="episode-img" onerror="this.style.display='none'">
@@ -449,7 +432,7 @@
     }
 
     /* ---------------------------------------------------
-       برمجة المشغل المخصص وحفظ تقدم المشاهدة وشريط التمرير
+       المشغل المخصص المحسّن لسرعة التشغيل الفوري والتحكم السلس
     --------------------------------------------------- */
     let hlsInstance = null;
     const video = document.getElementById('videoPlayer');
@@ -462,7 +445,7 @@
       document.getElementById('videoModal').style.display = 'flex';
       document.getElementById('playerTitle').innerText = title;
       isLiveStream = isLive;
-      currentMediaId = id; // حفظ المعرف للتمكن من إكمال المشاهدة
+      currentMediaId = id;
       
       if(isLive) {
         document.getElementById('liveIndicator').style.display = 'flex';
@@ -502,36 +485,38 @@
     function startVideo(url, isLive) {
       if (isLive && Hls.isSupported()) {
         if (hlsInstance) hlsInstance.destroy();
-        hlsInstance = new Hls(); 
+        hlsInstance = new Hls({
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          liveSyncDurationCount: 3,
+        }); 
         hlsInstance.loadSource(url); 
         hlsInstance.attachMedia(video);
         hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => video.play());
       } else {
         video.src = url; 
+        video.load();
         
-        // استرجاع الدقيقة التي توقف عندها (Resume)
+        // استرجاع التقدم بدقة فورية وسريعة
         if (!isLiveStream && currentMediaId) {
           const savedTime = localStorage.getItem('ahmedtv_resume_' + currentMediaId);
           if (savedTime && !isNaN(savedTime)) {
             video.currentTime = parseFloat(savedTime);
           }
         }
-        video.play();
+        video.play().catch(e => console.log(e));
       }
       resetUITimeout();
     }
 
     function closePlayer() {
-      // حفظ الوقت الحالي قبل الخروج إذا كان فيلماً أو مسلسلاً
       if (!isLiveStream && currentMediaId && video.currentTime > 5) {
         localStorage.setItem('ahmedtv_resume_' + currentMediaId, video.currentTime);
       }
-      
       video.pause(); 
       video.src = "";
       if (hlsInstance) hlsInstance.destroy();
       document.getElementById('videoModal').style.display = 'none';
-      if(document.fullscreenElement) document.exitFullscreen();
     }
 
     function toggleControls() {
@@ -541,13 +526,12 @@
 
     function resetUITimeout() {
       clearTimeout(uiTimeout);
-      uiTimeout = setTimeout(() => { playerUI.classList.add('hidden'); }, 3000);
+      uiTimeout = setTimeout(() => { playerUI.classList.add('hidden'); }, 3500);
     }
 
     video.addEventListener('mousemove', resetUITimeout);
     video.addEventListener('touchstart', resetUITimeout);
 
-    // أزرار التحكم 10 ثواني تعمل الآن بشكل سليم
     function togglePlayPause() {
       const icon = document.querySelector('#playPauseBtn i');
       if (video.paused) { video.play(); icon.className = 'fas fa-pause'; } 
@@ -569,18 +553,15 @@
     }
 
     function toggleFullscreen() {
-      const modal = document.getElementById('videoModal');
-      if (!document.fullscreenElement) {
-        if(modal.requestFullscreen) modal.requestFullscreen();
-        else if(modal.webkitRequestFullscreen) modal.webkitRequestFullscreen();
-      } else {
-        if(document.exitFullscreen) document.exitFullscreen();
-        else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+      if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      } else if (video.requestFullscreen) {
+        video.requestFullscreen();
       }
       resetUITimeout();
     }
 
-    // تحديث شريط التقدم وحفظ التقدم تلقائياً
+    // تحديث شريط التقدم الفوري ودون تأخير
     video.addEventListener('timeupdate', () => {
       if (isLiveStream || !video.duration || isDraggingProgress) return;
       
@@ -596,7 +577,6 @@
       };
       document.getElementById('timeDisplay').innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
       
-      // حفظ التقدم بانتظام (كل 5 ثواني مثلاً)
       if (currentMediaId && Math.floor(video.currentTime) % 5 === 0 && video.currentTime > 5) {
         localStorage.setItem('ahmedtv_resume_' + currentMediaId, video.currentTime);
       }
@@ -605,12 +585,11 @@
     video.addEventListener('play', () => document.querySelector('#playPauseBtn i').className = 'fas fa-pause');
     video.addEventListener('pause', () => document.querySelector('#playPauseBtn i').className = 'fas fa-play');
     video.addEventListener('ended', () => {
-      // تنظيف الذاكرة عند الانتهاء
       if(currentMediaId) localStorage.removeItem('ahmedtv_resume_' + currentMediaId);
     });
 
     /* ---------------------------------------------------
-       برمجة سحب شريط التقدم بالإصبع
+       تحسين سحب شريط التقدم بالإصبع داخل الـ WebView
     --------------------------------------------------- */
     const progressContainer = document.getElementById('progressContainer');
     let isDraggingProgress = false;
@@ -629,7 +608,6 @@
       document.getElementById('progressThumb').style.right = (100 - percent) + '%';
     }
 
-    // للمس عبر الموبايل (Touch)
     progressContainer.addEventListener('touchstart', (e) => {
       if(isLiveStream) return;
       isDraggingProgress = true;
@@ -639,16 +617,14 @@
 
     progressContainer.addEventListener('touchmove', (e) => {
       if(!isDraggingProgress) return;
-      e.preventDefault(); // لمنع تحرك الشاشة أثناء سحب الشريط
       resetUITimeout();
       updateProgressFromEvent(e);
-    }, {passive: false});
+    }, {passive: true});
 
     progressContainer.addEventListener('touchend', () => {
       isDraggingProgress = false;
     });
 
-    // للماوس عبر الكمبيوتر
     progressContainer.addEventListener('mousedown', (e) => {
       if(isLiveStream) return;
       isDraggingProgress = true;
