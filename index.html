@@ -3,196 +3,298 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AHMED TV</title>
+  <title>AHMED TV | Full Pro Edition</title>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;400;600;700&display=swap" rel="stylesheet">
+  <!-- مكتبة HLS لتشغيل روابط البث المباشر -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
-    body { background-color: #0b1120; color: #ffffff; padding-bottom: 75px; overflow-x: hidden; }
-
-    #appLaunchAdOverlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #020617; z-index: 99999;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-    }
-    #appLaunchAdFrame { width: 100%; height: 100%; border: none; pointer-events: auto; }
-    .start-skip-btn {
-      position: absolute; bottom: 30px; left: 20px;
-      background: rgba(15, 23, 42, 0.8); color: #64748b;
-      border: 1px solid rgba(255, 255, 255, 0.2); padding: 10px 22px;
-      border-radius: 25px; font-size: 13px; font-weight: bold;
-      cursor: not-allowed; transition: all 0.3s ease; z-index: 100000;
-    }
-    .start-skip-btn.active {
-      background: rgba(2, 132, 199, 0.95); color: #ffffff;
-      border-color: #38bdf8; cursor: pointer;
+    :root {
+      --ios-blur: blur(35px);
+      --ios-bg: rgba(255, 255, 255, 0.08);
+      --ios-border: rgba(255, 255, 255, 0.15);
+      --accent: #007aff;
+      --danger: #ff3b30;
+      --card-bg: rgba(25, 25, 25, 0.65);
     }
 
-    .header { padding: 20px 16px 10px; display: flex; justify-content: space-between; align-items: center; }
-    .app-title { font-size: 22px; font-weight: bold; }
-    .user-tag { font-size: 12px; color: #94a3b8; }
-    .status-badge { background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
 
-    .search-box { margin: 10px 16px; position: relative; }
-    .search-box input { width: 100%; padding: 12px 16px 12px 40px; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 25px; color: #fff; font-size: 14px; outline: none; }
-    .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b; }
+    body {
+      font-family: 'Readex Pro', sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      background: radial-gradient(circle at top right, #1a2a3a 0%, #000 100%);
+      overflow-x: hidden;
+      padding-bottom: 120px;
+    }
 
-    .main-categories { display: flex; gap: 10px; padding: 5px 16px 10px; }
-    .main-cat-btn { flex: 1; padding: 10px; background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #94a3b8; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; }
-    .main-cat-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; }
+    /* شاشة منع AdGuard / VPN */
+    #protection-screen {
+      position: fixed; inset: 0; background: #000; z-index: 10000;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      padding: 30px; text-align: center;
+    }
+    .warning-box {
+      background: var(--ios-bg); backdrop-filter: var(--ios-blur);
+      border: 1px solid var(--ios-border); border-radius: 30px;
+      padding: 40px 20px; max-width: 400px; width: 100%;
+    }
+    .warning-box i { font-size: 60px; color: var(--danger); margin-bottom: 25px; }
+    .warning-box h2 { font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+    .warning-box p { font-size: 14px; opacity: 0.7; line-height: 1.6; margin-bottom: 25px; }
+    .btn-retry {
+      background: var(--accent); color: white; border: none; padding: 12px 30px;
+      border-radius: 15px; font-family: inherit; font-weight: 600; cursor: pointer;
+    }
 
-    .sub-categories { display: flex; gap: 8px; padding: 5px 16px 10px; overflow-x: auto; white-space: nowrap; }
-    .sub-categories::-webkit-scrollbar { display: none; }
-    .sub-cat-btn { padding: 6px 14px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; color: #94a3b8; font-size: 12px; cursor: pointer; }
-    .sub-cat-btn.active { background: #334155; color: #38bdf8; border-color: #38bdf8; }
+    header {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: var(--ios-blur);
+      -webkit-backdrop-filter: var(--ios-blur);
+      padding: 12px 20px 15px;
+      border-bottom: 0.5px solid var(--ios-border);
+    }
 
-    .content-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; }
-    .media-card { background: linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8)); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; overflow: hidden; text-align: center; position: relative; cursor: pointer; display: flex; flex-direction: column; }
-    .media-poster { width: 100%; height: 145px; object-fit: cover; background-color: #1e293b; }
-    .channel-logo { width: 100%; height: 100px; object-fit: contain; padding: 10px; background-color: rgba(15, 23, 42, 0.5); }
-    .live-badge { position: absolute; top: 6px; right: 6px; background: rgba(239, 68, 68, 0.9); color: #ffffff; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-    .media-title { font-size: 11px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 8px; margin-top: auto; }
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .menu-btn { background: var(--ios-bg); border: 0.5px solid var(--ios-border); width: 40px; height: 40px; border-radius: 12px; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .brand-container { text-align: center; flex: 1; }
+    .brand-name { font-size: 22px; font-weight: 700; letter-spacing: 1px; text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+    .brand-name span { color: var(--accent); }
 
-    .loader-container { grid-column: span 3; text-align: center; padding: 20px; color: #94a3b8; }
+    .search-container {
+      display: flex; align-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 14px; padding: 8px 15px;
+      border: 0.5px solid var(--ios-border);
+    }
+    .search-container input {
+      background: none; border: none; color: white; width: 100%;
+      outline: none; font-family: inherit; font-size: 14px; margin-right: 10px;
+    }
+
+    /* الأقسام الرئيسية والفرعية */
+    .main-cats { display: flex; gap: 8px; padding: 130px 20px 10px; max-width: 600px; margin: 0 auto; }
+    .main-cat-btn { flex: 1; padding: 10px; background: var(--ios-bg); border: 0.5px solid var(--ios-border); border-radius: 14px; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; font-family: inherit; transition: 0.3s; }
+    .main-cat-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4); }
+
+    .sub-cats { display: flex; gap: 8px; padding: 0 20px 15px; overflow-x: auto; white-space: nowrap; max-width: 600px; margin: 0 auto; }
+    .sub-cats::-webkit-scrollbar { display: none; }
+    .sub-cat-btn { padding: 6px 14px; background: var(--ios-bg); border: 0.5px solid var(--ios-border); border-radius: 12px; color: rgba(255,255,255,0.6); font-size: 12px; cursor: pointer; font-family: inherit; transition: 0.2s; }
+    .sub-cat-btn.active { background: rgba(255,255,255,0.2); color: #fff; border-color: #fff; font-weight: 600; }
+
+    .app-container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
+    .section-label { font-size: 18px; font-weight: 600; margin: 20px 5px 12px; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 10px; }
+    .section-label i { font-size: 15px; color: var(--accent); }
+
+    /* شبكة الكروت بتصميم عائم متناسق */
+    .content-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glass-card {
+      background: var(--ios-bg);
+      backdrop-filter: var(--ios-blur);
+      -webkit-backdrop-filter: var(--ios-blur);
+      border: 1px solid var(--ios-border);
+      border-radius: 22px;
+      padding: 12px; text-align: center;
+      position: relative; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center;
+      transition: all 0.3s ease; text-decoration: none; color: white;
+    }
+    .glass-card:active { transform: scale(0.96); background: rgba(255,255,255,0.15); }
+
+    .card-img { width: 100%; height: 110px; object-fit: contain; border-radius: 14px; background: rgba(0,0,0,0.2); padding: 8px; margin-bottom: 10px; }
+    .card-poster { width: 100%; height: 160px; object-fit: cover; border-radius: 14px; margin-bottom: 10px; }
+    .card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
     
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-space: around; align-items: center; z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; font-size: 10px; gap: 4px; cursor: pointer; }
-    .nav-item.active { color: #38bdf8; }
-    .nav-item i { font-size: 18px; }
+    .live-badge { position: absolute; top: 10px; right: 10px; background: var(--danger); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 6px; font-weight: bold; }
+    
+    /* زر المفضلة فوق الكارت */
+    .fav-card-btn { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 0.5px solid var(--ios-border); width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; transition: 0.2s; }
+    .fav-card-btn.active { color: var(--danger); background: rgba(255, 59, 48, 0.15); border-color: var(--danger); }
+
+    /* القائمة الجانبية Drawer */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2500; display: none; backdrop-filter: blur(5px); }
+    .side-drawer { position: fixed; top: 0; right: -280px; width: 280px; height: 100vh; background: rgba(18, 18, 20, 0.95); backdrop-filter: var(--ios-blur); z-index: 3000; border-left: 1px solid var(--ios-border); transition: right 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); display: flex; flex-direction: column; }
+    .side-drawer.open { right: 0; }
+    .drawer-header { padding: 35px 20px; background: linear-gradient(135deg, rgba(0,122,255,0.3), transparent); text-align: center; border-bottom: 0.5px solid var(--ios-border); }
+    .drawer-avatar { width: 65px; height: 65px; background: var(--ios-bg); border: 1px solid var(--ios-border); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--accent); }
+    .drawer-menu-list { padding: 15px 0; flex: 1; }
+    .drawer-item { padding: 15px 22px; display: flex; align-items: center; gap: 15px; color: #fff; font-size: 14px; text-decoration: none; cursor: pointer; transition: 0.2s; border-right: 3px solid transparent; }
+    .drawer-item:active { background: rgba(255,255,255,0.06); color: var(--accent); border-right-color: var(--accent); }
+    .drawer-item i { font-size: 18px; width: 24px; text-align: center; color: var(--accent); }
+
+    /* مشغل الفيديو المدمج بنفس طراز المنظر */
+    #videoModal { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
+    #videoPlayer { width: 100%; max-height: 80vh; background: #000; outline: none; }
+    .player-close-btn { position: absolute; top: 20px; left: 20px; background: var(--ios-bg); backdrop-filter: var(--ios-blur); border: 0.5px solid var(--ios-border); color: #fff; width: 45px; height: 45px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5001; }
+
+    /* الشريط السفلي Tab Bar */
+    .tab-bar {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      width: 92%; max-width: 450px; height: 65px; background: rgba(25, 25, 25, 0.75);
+      backdrop-filter: var(--ios-blur); border-radius: 32px;
+      border: 1.5px solid var(--ios-border);
+      display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .tab-item { color: rgba(255,255,255,0.4); text-decoration: none; text-align: center; font-size: 10px; cursor: pointer; flex: 1; transition: 0.2s; }
+    .tab-item i { font-size: 20px; display: block; margin-bottom: 3px; }
+    .tab-item.active { color: var(--accent); font-weight: 600; }
+
+    .loader { text-align: center; grid-column: span 2; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px; }
   </style>
 </head>
 <body>
 
-  <div id="appLaunchAdOverlay">
-    <iframe id="appLaunchAdFrame" src="https://omg10.com/4/11117312"></iframe>
-    <button id="startSkipBtn" class="start-skip-btn" onclick="closeStartAd()">انتظر (<span id="startTimer">5</span>)</button>
-  </div>
-
-  <div class="header">
-    <div>
-      <div class="app-title">AHMED TV</div>
-      <div class="user-tag" id="userInfo">مرحباً بك</div>
+  <!-- شاشة الحماية -->
+  <div id="protection-screen">
+    <div class="warning-box">
+      <i class="fas fa-shield-halved"></i>
+      <h2>تنبيه أمني</h2>
+      <p>يجب إيقاف <b>AdGuard DNS</b> أو <b>VPN</b> لتشغيل AHMED TV بدون مشاكل في البث.</p>
+      <button class="btn-retry" onclick="location.reload()">تحديث الصفحة</button>
     </div>
-    <div class="status-badge" id="serverStatus">جاري الفحص</div>
   </div>
 
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="بحث شامل..." oninput="handleSearch(this.value)">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <!-- القائمة الجانبية -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+  <div class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+      <div class="drawer-avatar"><i class="fas fa-tv"></i></div>
+      <h3 style="font-size: 18px;">AHMED TV</h3>
+      <p style="font-size: 11px; opacity: 0.6; margin-top: 4px;">النسخة الاحترافية الأصلية</p>
+    </div>
+    <div class="drawer-menu-list">
+      <a href="https://t.me/AHMEDTVGY" target="_blank" class="drawer-item">
+        <i class="fab fa-telegram"></i> قناة التليجرام
+      </a>
+      <div class="drawer-item" onclick="shareApp()">
+        <i class="fas fa-share-nodes"></i> مشاركة التطبيق
+      </div>
+      <div class="drawer-item" onclick="toggleDrawer(); switchTab('favorites')">
+        <i class="fas fa-heart" style="color: var(--danger);"></i> المفضلة المفضلة
+      </div>
+    </div>
   </div>
 
-  <div class="main-categories">
-    <button class="main-cat-btn active" id="btnLive" onclick="switchMainSection('live')"><i class="fa-solid fa-tv"></i> القنوات</button>
-    <button class="main-cat-btn" id="btnMovies" onclick="switchMainSection('movies')"><i class="fa-solid fa-film"></i> الأفلام</button>
-    <button class="main-cat-btn" id="btnSeries" onclick="switchMainSection('series')"><i class="fa-solid fa-border-all"></i> المسلسلات</button>
+  <!-- مشغل الفيديو المنبثق -->
+  <div id="videoModal">
+    <button class="player-close-btn" onclick="closePlayer()"><i class="fas fa-xmark"></i></button>
+    <video id="videoPlayer" controls autoplay playsinline></video>
   </div>
 
-  <div class="sub-categories" id="subCategoriesBar"></div>
+  <!-- الهيدر -->
+  <header>
+    <div class="header-top">
+      <button class="menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
+      <div class="brand-container"><div class="brand-name">AHMED <span>TV</span></div></div>
+      <div style="width: 40px;"></div>
+    </div>
+    <div class="search-container">
+      <i class="fas fa-search" style="color: rgba(255,255,255,0.4);"></i>
+      <input type="text" id="searchInput" placeholder="ابحث عن قناة أو فيلم..." oninput="handleSearch(this.value)">
+    </div>
+  </header>
 
-  <div class="content-grid" id="contentGrid"></div>
-
-  <div class="bottom-nav">
-    <div class="nav-item active" id="navLive" onclick="switchMainSection('live')"><i class="fa-solid fa-tv"></i><span>القنوات</span></div>
-    <div class="nav-item" id="navMovies" onclick="switchMainSection('movies')"><i class="fa-solid fa-film"></i><span>الأفلام</span></div>
-    <div class="nav-item" id="navSeries" onclick="switchMainSection('series')"><i class="fa-solid fa-border-all"></i><span>المسلسلات</span></div>
+  <!-- الأقسام الرئيسية -->
+  <div class="main-cats">
+    <button class="main-cat-btn active" id="btnLive" onclick="switchTab('live')"><i class="fas fa-broadcast-tower"></i> القنوات</button>
+    <button class="main-cat-btn" id="btnMovies" onclick="switchTab('movies')"><i class="fas fa-film"></i> الأفلام</button>
+    <button class="main-cat-btn" id="btnSeries" onclick="switchTab('series')"><i class="fas fa-th-large"></i> المسلسلات</button>
   </div>
+
+  <div class="sub-cats" id="subCatsBar"></div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="app-container">
+    <div class="content-grid" id="contentGrid">
+      <div class="loader">جاري التحميل...</div>
+    </div>
+  </main>
+
+  <!-- الشريط السفلي Tab Bar -->
+  <nav class="tab-bar">
+    <a class="tab-item active" id="tabLive" onclick="switchTab('live')"><i class="fas fa-home"></i><span>الرئيسية</span></a>
+    <a class="tab-item" id="tabMovies" onclick="switchTab('movies')"><i class="fas fa-film"></i><span>الأفلام</span></a>
+    <a class="tab-item" id="tabSeries" onclick="switchTab('series')"><i class="fas fa-tv"></i><span>المسلسلات</span></a>
+    <a class="tab-item" id="tabFav" onclick="switchTab('favorites')"><i class="fas fa-heart"></i><span>المفضلة</span></a>
+  </nav>
 
   <script>
     const host = "http://luxipgold.xyz:8080";
     const user = "b0:99:d7:15:88:50";
     const pass = "3090914536649669";
 
-    let currentMainSection = 'live';
+    let currentSection = 'live';
     let categoriesList = [];
     let fullDataList = [];
-    let filteredList = [];
-    let displayedCount = 0;
-    const pageSize = 12;
-    let canSkipStartAd = false;
+    let favorites = JSON.parse(localStorage.getItem('ahmed_tv_favs') || '[]');
+    let hlsInstance = null;
 
-    let startTimer = 5;
-    
-    // تشغيل العداد بضمان تام بعيداً عن تعليق الـ iframe
-    const startInterval = setInterval(() => {
-      startTimer--;
-      const span = document.getElementById('startTimer');
-      if (span) span.innerText = startTimer;
-
-      if (startTimer <= 0) {
-        clearInterval(startInterval);
-        canSkipStartAd = true;
-        const btn = document.getElementById('startSkipBtn');
-        if (btn) {
-          btn.classList.add('active');
-          btn.innerHTML = 'تخطي الإعلان <i class="fa-solid fa-arrow-left"></i>';
-        }
+    // فحص الحماية
+    async function checkSecurity() {
+      try {
+        await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', { mode: 'no-cors', cache: 'no-store' });
+      } catch (e) {
+        document.getElementById('protection-screen').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
       }
-    }, 1000);
+    }
+    checkSecurity();
 
-    function closeStartAd() {
-      const overlay = document.getElementById('appLaunchAdOverlay');
-      if (overlay) overlay.style.display = 'none';
-      const iframe = document.getElementById('appLaunchAdFrame');
-      if (iframe) iframe.src = 'about:blank';
+    function toggleDrawer() {
+      const drawer = document.getElementById('sideDrawer');
+      const overlay = document.getElementById('drawerOverlay');
+      drawer.classList.toggle('open');
+      overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
     }
 
-    // زر احتياطي للطوارئ: لو الإعلان علّق لأي سبب، الضغط في أي مكان على شاشة الإعلان بعد 5 ثوانٍ يغلقه تلقائياً
-    document.getElementById('appLaunchAdOverlay').onclick = function(e) {
-      if (canSkipStartAd && e.target.id !== 'startSkipBtn') {
-        closeStartAd();
+    function shareApp() {
+      if (navigator.share) {
+        navigator.share({ title: 'AHMED TV', text: 'تابع أروع القنوات والأفلام عبر تطبيق AHMED TV', url: 'https://t.me/AHMEDTVGY' }).catch(() => {});
+      } else {
+        alert('https://t.me/AHMEDTVGY');
       }
-    };
+    }
 
-    window.onload = function() {
-      fetch(`${host}/player_api.php?username=${user}&password=${pass}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.user_info) {
-            document.getElementById('serverStatus').innerText = "متصل";
-            document.getElementById('userInfo').innerText = data.user_info.username || "أحمد";
-          }
-        })
-        .catch(() => {
-          document.getElementById('serverStatus').innerText = "خطأ الاتصال";
-        });
+    window.onload = () => { switchTab('live'); };
 
-      switchMainSection('live');
-    };
-
-    function switchMainSection(section) {
-      currentMainSection = section;
+    function switchTab(section) {
+      currentSection = section;
       document.getElementById('searchInput').value = "";
       
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.main-cat-btn').forEach(el => el.classList.remove('active'));
 
       if (section === 'live') {
-        document.getElementById('navLive').classList.add('active');
+        document.getElementById('tabLive').classList.add('active');
         document.getElementById('btnLive').classList.add('active');
+        fetchData('live');
       } else if (section === 'movies') {
-        document.getElementById('navMovies').classList.add('active');
+        document.getElementById('tabMovies').classList.add('active');
         document.getElementById('btnMovies').classList.add('active');
+        fetchData('movies');
       } else if (section === 'series') {
-        document.getElementById('navSeries').classList.add('active');
+        document.getElementById('tabSeries').classList.add('active');
         document.getElementById('btnSeries').classList.add('active');
+        fetchData('series');
+      } else if (section === 'favorites') {
+        document.getElementById('tabFav').classList.add('active');
+        renderFavorites();
       }
-
-      fetchCategoriesAndData(section);
     }
 
-    function fetchCategoriesAndData(type) {
+    function fetchData(type) {
       const grid = document.getElementById('contentGrid');
-      grid.innerHTML = '<div class="loader-container">جاري جلب المحتوى...</div>';
+      grid.innerHTML = '<div class="loader">جاري جلب المحتوى...</div>';
+      document.getElementById('subCatsBar').innerHTML = '';
 
-      let catAction = 'get_live_categories';
-      let dataAction = 'get_live_streams';
-
-      if (type === 'movies') {
-        catAction = 'get_vod_categories';
-        dataAction = 'get_vod_streams';
-      } else if (type === 'series') {
-        catAction = 'get_series_categories';
-        dataAction = 'get_series';
-      }
+      let catAction = type === 'movies' ? 'get_vod_categories' : (type === 'series' ? 'get_series_categories' : 'get_live_categories');
+      let dataAction = type === 'movies' ? 'get_vod_streams' : (type === 'series' ? 'get_series' : 'get_live_streams');
 
       Promise.all([
         fetch(`${host}/player_api.php?username=${user}&password=${pass}&action=${catAction}`).then(res => res.json()),
@@ -205,106 +307,142 @@
         filterByCategory('all');
       })
       .catch(() => {
-        grid.innerHTML = '<div class="loader-container">حدث خطأ أثناء تحميل البيانات</div>';
+        grid.innerHTML = '<div class="loader">تعذر الاتصال بالسيرفر</div>';
       });
     }
 
     function renderSubCategories() {
-      const subBar = document.getElementById('subCategoriesBar');
+      const subBar = document.getElementById('subCatsBar');
       subBar.innerHTML = '';
 
       const allBtn = document.createElement('button');
       allBtn.className = 'sub-cat-btn active';
       allBtn.innerText = 'الكل';
-      allBtn.onclick = (e) => {
-        setActiveSubCategory(e.target);
-        filterByCategory('all');
-      };
+      allBtn.onclick = (e) => { setActiveSub(e.target); filterByCategory('all'); };
       subBar.appendChild(allBtn);
 
       categoriesList.forEach(cat => {
         const btn = document.createElement('button');
         btn.className = 'sub-cat-btn';
         btn.innerText = cat.category_name;
-        btn.onclick = (e) => {
-          setActiveSubCategory(e.target);
-          filterByCategory(cat.category_id);
-        };
+        btn.onclick = (e) => { setActiveSub(e.target); filterByCategory(cat.category_id); };
         subBar.appendChild(btn);
       });
     }
 
-    function setActiveSubCategory(selectedBtn) {
+    function setActiveSub(btn) {
       document.querySelectorAll('.sub-cat-btn').forEach(el => el.classList.remove('active'));
-      selectedBtn.classList.add('active');
+      btn.classList.add('active');
     }
 
     function filterByCategory(catId) {
-      if (catId === 'all') {
-        filteredList = fullDataList;
-      } else {
-        filteredList = fullDataList.filter(item => item.category_id == catId);
-      }
-      displayedCount = 0;
-      document.getElementById('contentGrid').innerHTML = '';
-      renderBatch();
+      let list = catId === 'all' ? fullDataList : fullDataList.filter(i => i.category_id == catId);
+      renderGrid(list);
     }
 
-    function renderBatch() {
+    function renderFavorites() {
+      document.getElementById('subCatsBar').innerHTML = '';
+      renderGrid(favorites);
+    }
+
+    function isFav(item) {
+      const id = item.stream_id || item.series_id;
+      return favorites.some(f => (f.stream_id || f.series_id) == id);
+    }
+
+    function toggleFav(event, item) {
+      event.stopPropagation();
+      const id = item.stream_id || item.series_id;
+      const index = favorites.findIndex(f => (f.stream_id || f.series_id) == id);
+      if (index > -1) {
+        favorites.splice(index, 1);
+      } else {
+        favorites.push(item);
+      }
+      localStorage.setItem('ahmed_tv_favs', JSON.stringify(favorites));
+      event.currentTarget.classList.toggle('active');
+      if (currentSection === 'favorites') renderFavorites();
+    }
+
+    function renderGrid(list) {
       const grid = document.getElementById('contentGrid');
-      const nextBatch = filteredList.slice(displayedCount, displayedCount + pageSize);
+      grid.innerHTML = '';
 
-      nextBatch.forEach(item => {
+      if (!list || list.length === 0) {
+        grid.innerHTML = '<div class="loader">لا توجد عناصر لعرضها</div>';
+        return;
+      }
+
+      list.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'media-card';
+        card.className = 'glass-card';
+        const favorited = isFav(item);
+        const id = item.stream_id || item.series_id;
 
-        if (currentMainSection === 'live') {
-          const logo = item.stream_icon ? item.stream_icon : '';
-          const streamUrl = `${host}/live/${user}/${pass}/${item.stream_id}.m3u8`;
-          
-          card.onclick = () => {
-            if (window.AndroidInterface && window.AndroidInterface.playStream) {
-              window.AndroidInterface.playStream(streamUrl, true);
-            }
-          };
-          card.innerHTML = `
-            <span class="live-badge">LIVE</span>
-            ${logo ? `<img src="${logo}" class="channel-logo" loading="lazy">` 
-                   : `<div style="padding: 20px 10px; color: #38bdf8; font-size: 32px;"><i class="fa-solid fa-tv"></i></div>`}
-            <div class="media-title">${item.name}</div>
+        // زر المفضلة
+        const favBtn = document.createElement('button');
+        favBtn.className = `fav-card-btn ${favorited ? 'active' : ''}`;
+        favBtn.innerHTML = '<i class="fas fa-heart"></i>';
+        favBtn.onclick = (e) => toggleFav(e, item);
+        card.appendChild(favBtn);
+
+        if (currentSection === 'live' || (currentSection === 'favorites' && item.stream_icon && !item.container_extension)) {
+          const logo = item.stream_icon || '';
+          const streamUrl = `${host}/live/${user}/${pass}/${id}.m3u8`;
+          card.onclick = () => openPlayer(streamUrl, true);
+
+          card.innerHTML += `
+            <span class="live-badge">مباشر</span>
+            ${logo ? `<img src="${logo}" class="card-img" loading="lazy">` : `<div style="height:110px; display:flex; align-items:center; justify-content:center; font-size:30px; color:var(--accent);"><i class="fas fa-tv"></i></div>`}
+            <div class="card-title">${item.name}</div>
           `;
-        } 
-        else if (currentMainSection === 'movies') {
-          const poster = item.stream_icon ? item.stream_icon : 'https://via.placeholder.com/150/0b1120/ffffff?text=Movie';
+        } else {
+          const poster = item.stream_icon || 'https://via.placeholder.com/150/000/fff?text=AHMED+TV';
           const ext = item.container_extension || 'mp4';
-          const movieUrl = `${host}/movie/${user}/${pass}/${item.stream_id}.${ext}`;
-          
-          card.onclick = () => {
-            if (window.AndroidInterface && window.AndroidInterface.playStream) {
-              window.AndroidInterface.playStream(movieUrl, false);
-            }
-          };
-          card.innerHTML = `
-            <img src="${poster}" class="media-poster" loading="lazy">
-            <div class="media-title">${item.name}</div>
+          const mediaUrl = `${host}/movie/${user}/${pass}/${id}.${ext}`;
+          card.onclick = () => openPlayer(mediaUrl, false);
+
+          card.innerHTML += `
+            <img src="${poster}" class="card-poster" loading="lazy">
+            <div class="card-title">${item.name}</div>
           `;
         }
 
         grid.appendChild(card);
       });
+    }
 
-      displayedCount += nextBatch.length;
+    function openPlayer(url, isHlsStream) {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('videoPlayer');
+      modal.style.display = 'flex';
+
+      if (isHlsStream && Hls.isSupported()) {
+        if (hlsInstance) hlsInstance.destroy();
+        hlsInstance = new Hls();
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(video);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => { video.play(); });
+      } else {
+        video.src = url;
+        video.play();
+      }
+    }
+
+    function closePlayer() {
+      const modal = document.getElementById('videoModal');
+      const video = document.getElementById('videoPlayer');
+      video.pause();
+      video.src = "";
+      if (hlsInstance) hlsInstance.destroy();
+      modal.style.display = 'none';
     }
 
     function handleSearch(keyword) {
       const query = keyword.trim().toLowerCase();
-      filteredList = fullDataList.filter(item => {
-        const name = (item.name || "").toLowerCase();
-        return name.includes(query);
-      });
-      displayedCount = 0;
-      document.getElementById('contentGrid').innerHTML = '';
-      renderBatch();
+      const source = currentSection === 'favorites' ? favorites : fullDataList;
+      const filtered = source.filter(i => (i.name || "").toLowerCase().includes(query));
+      renderGrid(filtered);
     }
   </script>
 </body>
